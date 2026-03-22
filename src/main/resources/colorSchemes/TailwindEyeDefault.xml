@@ -1,0 +1,9 @@
+<scheme name="Default">
+    <attributes>
+        <option name="TAILWIND_EYE_TEXT">
+            <value>
+                <option name="FOREGROUND" value="c0c0c0"/>
+            </value>
+        </option>
+    </attributes>
+</scheme>

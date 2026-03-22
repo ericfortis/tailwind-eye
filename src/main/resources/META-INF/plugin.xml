@@ -1,0 +1,32 @@
+<!-- Plugin Configuration File. See https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.efortis.tailwindeye</id>
+    <name>TailwindEye</name>
+    <vendor>efortis</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <actions>
+        <action id="TailwindEye.Toggle"
+                class="com.github.ericfortis.tailwindeye.ToggleAction"
+                text="Toggle Tailwind Eye"
+                description="Enable/Disable fading for non-styling code">
+            <add-to-group group-id="ViewMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
+        </action>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <lang.foldingBuilder language="Vue" implementationClass="com.github.ericfortis.tailwindeye.FoldingBuilder"/>
+        <lang.foldingBuilder language="JSX Harmony" implementationClass="com.github.ericfortis.tailwindeye.FoldingBuilder"/>
+        <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.github.ericfortis.tailwindeye.FoldingBuilder"/>
+
+        <annotator language="Vue" implementationClass="com.github.ericfortis.tailwindeye.Annotator"/>
+        <annotator language="JSX Harmony" implementationClass="com.github.ericfortis.tailwindeye.Annotator"/>
+        <annotator language="TypeScript JSX" implementationClass="com.github.ericfortis.tailwindeye.Annotator"/>
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>
+        <colorSettingsPage implementation="com.github.ericfortis.tailwindeye.ColorSettingsPage"/>
+    </extensions>
+</idea-plugin>
