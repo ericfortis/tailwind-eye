@@ -28,13 +28,13 @@ public class ColorSettingsPage implements com.intellij.openapi.options.colors.Co
     @Override
     public @NotNull String getDemoText() {
         return """
-                <faded>function Example() {</faded>
-                <faded>  return (</faded>
-                    <div className="bg-blue-500 p-4 text-white font-bold">
+                <faded>function Example() {
+                     return (</faded>
+                    <div <faded>className="</faded>bg-blue-500 p-4 text-white font-bold<faded>">
                       Hello World
                     </div>
-                <faded>  );</faded>
-                <faded>}</faded>""";
+                  );
+                }</faded>""";
     }
 
     @Override

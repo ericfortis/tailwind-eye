@@ -33,9 +33,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
         while (matcher.find()) {
             int start = matcher.start(2);
             int end = matcher.end(2);
-            if (start < end) {
+            if (start < end)
                 descriptors.add(new FoldingDescriptor(root.getNode(), new TextRange(start, end), TAILWIND_GROUP));
-            }
         }
 
         return descriptors.toArray(new FoldingDescriptor[0]);

@@ -30,16 +30,14 @@ public class ToggleAction extends AnAction {
 
         // Refresh highlighting and folding in all open files
         DaemonCodeAnalyzer.getInstance(project).restart();
-        
+
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         if (editor != null) {
             FoldingModelEx foldingModel = (FoldingModelEx) editor.getFoldingModel();
             foldingModel.runBatchFoldingOperation(() -> {
-                for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getAllFoldRegions()) {
-                    if (FoldingBuilder.TAILWIND_GROUP.equals(region.getGroup())) {
+                for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getAllFoldRegions())
+                    if (FoldingBuilder.TAILWIND_GROUP.equals(region.getGroup()))
                         region.setExpanded(nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
-                    }
-                }
             });
         }
     }
