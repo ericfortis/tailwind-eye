@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Service(Service.Level.PROJECT)
 @com.intellij.openapi.components.State(name = "State", storages = @Storage("tailwindEye.xml"))
-public final class State implements PersistentStateComponent<State.InnerState> {
+public final class CoreState implements PersistentStateComponent<CoreState.InnerState> {
 
     public enum FadingMode {
         NON_STYLING,
@@ -22,8 +22,8 @@ public final class State implements PersistentStateComponent<State.InnerState> {
 
     private InnerState myState = new InnerState();
 
-    public static State getInstance(@NotNull Project project) {
-        return project.getService(State.class);
+    public static CoreState getInstance(@NotNull Project project) {
+        return project.getService(CoreState.class);
     }
 
     @Override

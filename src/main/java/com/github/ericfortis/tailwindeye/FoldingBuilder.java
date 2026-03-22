@@ -49,7 +49,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Override
     public boolean isCollapsedByDefault(@NotNull ASTNode node) {
         Project project = node.getPsi().getProject();
-        State.FadingMode mode = State.getInstance(project).getFadingMode();
-        return mode == State.FadingMode.FOLD_CLASS_NAME;
+        CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
+        return mode == CoreState.FadingMode.FOLD_CLASS_NAME;
     }
 }

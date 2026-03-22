@@ -16,14 +16,14 @@ public class ToggleAction extends AnAction {
         Project project = e.getProject();
         if (project == null) return;
 
-        State state = State.getInstance(project);
-        State.FadingMode currentMode = state.getFadingMode();
-        State.FadingMode nextMode;
+        CoreState state = CoreState.getInstance(project);
+        CoreState.FadingMode currentMode = state.getFadingMode();
+        CoreState.FadingMode nextMode;
 
         switch (currentMode) {
-            case NON_STYLING -> nextMode = State.FadingMode.FOLD_CLASS_NAME;
-            case FOLD_CLASS_NAME -> nextMode = State.FadingMode.NON_STYLING;
-            default -> nextMode = State.FadingMode.NON_STYLING;
+            case NON_STYLING -> nextMode = CoreState.FadingMode.FOLD_CLASS_NAME;
+            case FOLD_CLASS_NAME -> nextMode = CoreState.FadingMode.NON_STYLING;
+            default -> nextMode = CoreState.FadingMode.NON_STYLING;
         }
 
         state.setFadingMode(nextMode);
@@ -37,7 +37,7 @@ public class ToggleAction extends AnAction {
             foldingModel.runBatchFoldingOperation(() -> {
                 for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getAllFoldRegions()) {
                     if (FoldingBuilder.TAILWIND_GROUP.equals(region.getGroup())) {
-                        region.setExpanded(nextMode != State.FadingMode.FOLD_CLASS_NAME);
+                        region.setExpanded(nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
                     }
                 }
             });
@@ -52,7 +52,7 @@ public class ToggleAction extends AnAction {
             return;
         }
 
-        State.FadingMode mode = State.getInstance(project).getFadingMode();
+        CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
         String text = switch (mode) {
             case NON_STYLING -> "Switch to Folding (className)";
             case FOLD_CLASS_NAME -> "Switch to Fading (Non-styling)";

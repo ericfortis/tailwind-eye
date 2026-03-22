@@ -20,11 +20,11 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
         if (!(element instanceof PsiFile psiFile)) return;
 
         Project project = psiFile.getProject();
-        State.FadingMode mode = State.getInstance(project).getFadingMode();
+        CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
         
         String text = psiFile.getText();
 
-        if (mode == State.FadingMode.NON_STYLING) {
+        if (mode == CoreState.FadingMode.NON_STYLING) {
             String[] lines = text.split("\n");
             int lineOffset = 0;
 
