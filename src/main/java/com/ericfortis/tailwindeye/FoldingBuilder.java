@@ -1,4 +1,4 @@
-package com.github.ericfortis.tailwindeye;
+package com.ericfortis.tailwindeye;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;

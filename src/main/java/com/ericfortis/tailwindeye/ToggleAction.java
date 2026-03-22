@@ -1,4 +1,4 @@
-package com.github.ericfortis.tailwindeye;
+package com.ericfortis.tailwindeye;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;

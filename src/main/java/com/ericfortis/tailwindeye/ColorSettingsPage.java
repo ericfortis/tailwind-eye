@@ -1,4 +1,4 @@
-package com.github.ericfortis.tailwindeye;
+package com.ericfortis.tailwindeye;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.options.colors.AttributesDescriptor;

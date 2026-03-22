@@ -30,12 +30,12 @@ dependencies {
 
 intellijPlatform {
     pluginConfiguration {
-        id.set("com.github.ericfortis.tailwindeye")
-        name.set("TailwindEye")
+        id.set("com.ericfortis.tailwindeye")
+        name.set("Tailwind Eye")
         vendor {
             name.set("ericfortis")
         }
-        changeNotes.set("Initial version of TailwindEye.")
+        changeNotes.set("Initial version of Tailwind Eye.")
 
         ideaVersion {
             sinceBuild.set("242")
