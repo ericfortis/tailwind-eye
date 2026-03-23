@@ -105,8 +105,7 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 	}
 
 	private void processAttribute(XmlAttribute attribute, List<TextRange> keepRanges) {
-		String name = attribute.getName();
-		if ("className".equals(name)) {
+		if ("className".equals(attribute.getName())) {
 			XmlAttributeValue value = attribute.getValueElement();
 			if (value != null)
 				keepRanges.add(value.getValueTextRange());
