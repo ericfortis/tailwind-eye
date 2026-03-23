@@ -94,10 +94,8 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 		PsiElement firstChild = tag.getFirstChild();
 		if (firstChild instanceof XmlToken token && token.getTokenType() == XmlTokenType.XML_START_TAG_START) {
 			PsiElement nameElement = firstChild.getNextSibling();
-			if (nameElement instanceof XmlToken token2 && (token2.getTokenType() == XmlTokenType.XML_TAG_NAME || token2.getTokenType().toString().contains("TAG_NAME")))
-				keepRanges.add(new TextRange(firstChild.getTextRange().getStartOffset(), nameElement.getTextRange().getEndOffset()));
-			else
-				keepRanges.add(firstChild.getTextRange());
+			if (nameElement instanceof XmlToken token2 && token2.getTokenType() == XmlTokenType.XML_TAG_NAME)
+				keepRanges.add(nameElement.getTextRange());
 		}
 
 		for (XmlAttribute attribute : tag.getAttributes())
