@@ -80,4 +80,18 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         
         assertEquals("Should have no folding descriptors", 0, descriptors.length);
     }
+    public void testFoldingForEmptyClassNameIncludesQuotes() {
+        myFixture.configureByText("test.xml",
+                "<tag className=\"\">Hello</tag>");
+        
+        FoldingBuilder builder = new FoldingBuilder();
+        FoldingDescriptor[] descriptors = builder.buildFoldRegions(
+                myFixture.getFile(), 
+                myFixture.getEditor().getDocument(), 
+                false
+        );
+        
+        // In XML context, className="" value range includes the quotes, so length is 2.
+        assertEquals("Should have folding descriptor for empty className quotes in XML", 1, descriptors.length);
+    }
 }

@@ -32,15 +32,12 @@ public class FoldingBuilder extends FoldingBuilderEx {
 		root.accept(new PsiRecursiveElementWalkingVisitor() {
 			@Override
 			public void visitElement(@NotNull PsiElement element) {
-				if (element instanceof XmlAttribute attribute) {
-					String name = attribute.getName();
-					if ("className".equals(name)) {
-						XmlAttributeValue value = attribute.getValueElement();
-						if (value != null) {
-							TextRange range = value.getValueTextRange();
-							if (range.getStartOffset() < range.getEndOffset())
-								descriptors.add(new FoldingDescriptor(element.getNode(), range, TAILWIND_GROUP));
-						}
+				if (element instanceof XmlAttribute attribute && "className".equals(attribute.getName())) {
+					XmlAttributeValue value = attribute.getValueElement();
+					if (value != null) {
+						TextRange range = value.getValueTextRange();
+						if (range.getStartOffset() < range.getEndOffset())
+							descriptors.add(new FoldingDescriptor(element.getNode(), range, TAILWIND_GROUP));
 					}
 				}
 				super.visitElement(element);
