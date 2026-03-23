@@ -59,7 +59,6 @@ public class EditStringAction extends AnAction {
         EditorFactory editorFactory = EditorFactory.getInstance();
         EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, FileTypeManager.getInstance().getFileTypeByExtension("txt"), false);
         
-        popupEditor.getSettings().setLineNumbersShown(true);
         popupEditor.getSettings().setFoldingOutlineShown(false);
         popupEditor.getComponent().setPreferredSize(new Dimension(400, 300));
 
