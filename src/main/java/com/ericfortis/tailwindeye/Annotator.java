@@ -81,22 +81,8 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 			annotateFaded(lastEnd, text.length(), holder);
 	}
 
-	private void annotateFaded(int start, int end, AnnotationHolder holder) {
-		if (start < end)
-			holder.newAnnotation(HighlightSeverity.INFORMATION, "")
-				 .range(new TextRange(start, end))
-				 .textAttributes(FADED_TEXT)
-				 .create();
-	}
-
 	private void processTag(XmlTag tag, List<TextRange> keepRanges) {
-		// Add opening tag range (e.g., <div)
-		PsiElement firstChild = tag.getFirstChild();
-		if (firstChild instanceof XmlToken token && token.getTokenType() == XmlTokenType.XML_START_TAG_START) {
-			PsiElement nameElement = firstChild.getNextSibling();
-			if (nameElement instanceof XmlToken token2 && token2.getTokenType() == XmlTokenType.XML_TAG_NAME)
-				keepRanges.add(nameElement.getTextRange());
-		}
+		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
 		for (XmlAttribute attribute : tag.getAttributes())
 			processAttribute(attribute, keepRanges);
@@ -108,5 +94,13 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 			if (value != null)
 				keepRanges.add(value.getValueTextRange());
 		}
+	}
+
+	private void annotateFaded(int start, int end, AnnotationHolder holder) {
+		if (start < end)
+			holder.newAnnotation(HighlightSeverity.INFORMATION, "")
+				 .range(new TextRange(start, end))
+				 .textAttributes(FADED_TEXT)
+				 .create();
 	}
 }
