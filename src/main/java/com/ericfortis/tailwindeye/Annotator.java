@@ -84,17 +84,14 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 	private void processTag(XmlTag tag, List<TextRange> keepRanges) {
 		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
-		for (XmlAttribute attribute : tag.getAttributes())
-			processAttribute(attribute, keepRanges);
-	}
-
-	private void processAttribute(XmlAttribute attribute, List<TextRange> keepRanges) {
-		if ("className".equals(attribute.getName())) {
+		XmlAttribute attribute = tag.getAttribute("className");
+		if (attribute != null) {
 			XmlAttributeValue value = attribute.getValueElement();
 			if (value != null)
 				keepRanges.add(value.getValueTextRange());
 		}
 	}
+
 
 	private void annotateFaded(int start, int end, AnnotationHolder holder) {
 		if (start < end)
