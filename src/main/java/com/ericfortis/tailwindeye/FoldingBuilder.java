@@ -34,13 +34,12 @@ public class FoldingBuilder extends FoldingBuilderEx {
 			public void visitElement(@NotNull PsiElement element) {
 				if (element instanceof XmlAttribute attribute) {
 					String name = attribute.getName();
-					if ("className".equals(name) || "class".equals(name)) {
+					if ("className".equals(name)) {
 						XmlAttributeValue value = attribute.getValueElement();
 						if (value != null) {
 							TextRange range = value.getValueTextRange();
-							if (range.getStartOffset() < range.getEndOffset()) {
+							if (range.getStartOffset() < range.getEndOffset())
 								descriptors.add(new FoldingDescriptor(element.getNode(), range, TAILWIND_GROUP));
-							}
 						}
 					}
 				}
