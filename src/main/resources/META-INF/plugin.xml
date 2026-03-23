@@ -1,39 +1,39 @@
 <!-- Plugin Configuration File. See https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.efortis.tailwindeye</id>
-    <name>Tailwind Eye</name>
-    <vendor>ericfortis</vendor>
+  <id>com.efortis.tailwindeye</id>
+  <name>Tailwind Eye</name>
+  <vendor>ericfortis</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.tailwindcss</depends>
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.tailwindcss</depends>
 
-    <actions>
-        <action id="TailwindEye.Toggle"
-                class="com.ericfortis.tailwindeye.ToggleAction"
-                text="Toggle Tailwind Eye"
-                description="Enable/Disable fading for non-styling code">
-            <add-to-group group-id="ViewMenu" anchor="last"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
-        </action>
-        <action id="TailwindEye.EditString"
-                class="com.ericfortis.tailwindeye.EditStringAction"
-                text="Edit Tailwind Classes"
-                description="Edit tailwind classes in a floating editor">
-            <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
-        </action>
-    </actions>
+  <actions>
+    <action id="TailwindEye.Toggle"
+            class="com.ericfortis.tailwindeye.ToggleAction"
+            text="Toggle Tailwind Eye"
+            description="Enable/Disable fading for non-styling code">
+      <add-to-group group-id="ViewMenu" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
+    </action>
+    <action id="TailwindEye.EditString"
+            class="com.ericfortis.tailwindeye.EditStringAction"
+            text="Edit Tailwind Classes"
+            description="Edit tailwind classes in a floating editor">
+      <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
+    </action>
+  </actions>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <lang.foldingBuilder language="Vue" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
-        <lang.foldingBuilder language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
-        <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
+  <extensions defaultExtensionNs="com.intellij">
+    <lang.foldingBuilder language="Vue" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
+    <lang.foldingBuilder language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
+    <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
 
-        <annotator language="Vue" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
-        <annotator language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
-        <annotator language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
+    <annotator language="Vue" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
+    <annotator language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
+    <annotator language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
 
-        <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>
-        <colorSettingsPage implementation="com.ericfortis.tailwindeye.ColorSettingsPage"/>
-    </extensions>
+    <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>
+    <colorSettingsPage implementation="com.ericfortis.tailwindeye.ColorSettingsPage"/>
+  </extensions>
 </idea-plugin>

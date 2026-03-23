@@ -19,36 +19,36 @@ import java.util.regex.Pattern;
 
 public class FoldingBuilder extends FoldingBuilderEx {
 
-    public static final FoldingGroup TAILWIND_GROUP = FoldingGroup.newGroup("TailwindEyeFoldingGroup");
-    private static final Pattern CLASS_NAME_CONTENT_PATTERN = Pattern.compile("className\\s*[=:]\\s*([\"'])(.*?)\\1");
+	public static final FoldingGroup TAILWIND_GROUP = FoldingGroup.newGroup("TailwindEyeFoldingGroup");
+	private static final Pattern CLASS_NAME_CONTENT_PATTERN = Pattern.compile("className\\s*[=:]\\s*([\"'])(.*?)\\1");
 
-    @Override
-    public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
-        if (!(root instanceof PsiFile)) return FoldingDescriptor.EMPTY_ARRAY;
+	@Override
+	public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
+		if (!(root instanceof PsiFile)) return FoldingDescriptor.EMPTY_ARRAY;
 
-        List<FoldingDescriptor> descriptors = new ArrayList<>();
-        String text = root.getText();
-        Matcher matcher = CLASS_NAME_CONTENT_PATTERN.matcher(text);
+		List<FoldingDescriptor> descriptors = new ArrayList<>();
+		String text = root.getText();
+		Matcher matcher = CLASS_NAME_CONTENT_PATTERN.matcher(text);
 
-        while (matcher.find()) {
-            int start = matcher.start(2);
-            int end = matcher.end(2);
-            if (start < end)
-                descriptors.add(new FoldingDescriptor(root.getNode(), new TextRange(start, end), TAILWIND_GROUP));
-        }
+		while (matcher.find()) {
+			int start = matcher.start(2);
+			int end = matcher.end(2);
+			if (start < end)
+				descriptors.add(new FoldingDescriptor(root.getNode(), new TextRange(start, end), TAILWIND_GROUP));
+		}
 
-        return descriptors.toArray(new FoldingDescriptor[0]);
-    }
+		return descriptors.toArray(new FoldingDescriptor[0]);
+	}
 
-    @Override
-    public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
-        return "...";
-    }
+	@Override
+	public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
+		return "...";
+	}
 
-    @Override
-    public boolean isCollapsedByDefault(@NotNull ASTNode node) {
-        Project project = node.getPsi().getProject();
-        CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
-        return mode == CoreState.FadingMode.FOLD_CLASS_NAME;
-    }
+	@Override
+	public boolean isCollapsedByDefault(@NotNull ASTNode node) {
+		Project project = node.getPsi().getProject();
+		CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
+		return mode == CoreState.FadingMode.FOLD_CLASS_NAME;
+	}
 }

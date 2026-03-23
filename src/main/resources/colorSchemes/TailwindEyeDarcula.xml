@@ -1,9 +1,9 @@
 <scheme name="Darcula">
-    <attributes>
-        <option name="TAILWIND_EYE_TEXT">
-            <value>
-                <option name="FOREGROUND" value="606060"/>
-            </value>
-        </option>
-    </attributes>
+  <attributes>
+    <option name="TAILWIND_EYE_TEXT">
+      <value>
+        <option name="FOREGROUND" value="606060"/>
+      </value>
+    </option>
+  </attributes>
 </scheme>
