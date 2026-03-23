@@ -1,3 +1,6 @@
+## TODO
+- Whne runinnign in 2024.2 and focusssing on IDea (intead of webstorm) webstorm freezes. I mean running the Run Plugin task w
+
 # Tailwind Eye
 A WebStorm extension that provides a visual fading or folding effect for code. It can toggle between fading non-styling code (to focus on Tailwind classes) and folding the content of `className` strings.
 
