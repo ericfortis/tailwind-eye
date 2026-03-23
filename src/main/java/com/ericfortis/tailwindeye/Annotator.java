@@ -107,21 +107,11 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 	private void processAttribute(XmlAttribute attribute, List<TextRange> keepRanges) {
 		String name = attribute.getName();
 		if ("className".equals(name)) {
-			// Keep the name of the attribute
-			PsiElement nameElement = attribute.getFirstChild();
-			if (nameElement != null)
-				keepRanges.add(nameElement.getTextRange());
-
 			XmlAttributeValue value = attribute.getValueElement();
 			if (value != null) {
 				TextRange range = value.getValueTextRange();
 				if (range.getStartOffset() < range.getEndOffset())
 					keepRanges.add(range);
-				// Also keep quotes
-				PsiElement[] children = value.getChildren();
-				for (PsiElement child : children)
-					if (child instanceof XmlToken token && (token.getTokenType() == XmlTokenType.XML_ATTRIBUTE_VALUE_START_DELIMITER || token.getTokenType() == XmlTokenType.XML_ATTRIBUTE_VALUE_END_DELIMITER))
-						keepRanges.add(child.getTextRange());
 			}
 		}
 	}
