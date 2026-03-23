@@ -63,11 +63,10 @@ public class EditStringAction extends AnAction {
 
         JBPopup popup = JBPopupFactory.getInstance()
                 .createComponentPopupBuilder(scrollPane, list)
-                .setFocusable(true)
-                .setRequestFocus(true)
+//                .setFocusable(true)
+//                .setRequestFocus(true)
                 .setResizable(true)
                 .setMovable(true)
-                .setTitle("Tailwind Classes")
                 .createPopup();
 
         popup.showInBestPositionFor(editor);
