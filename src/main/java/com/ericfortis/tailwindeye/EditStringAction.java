@@ -69,7 +69,6 @@ public class EditStringAction extends AnAction {
                 .setRequestFocus(true)
                 .setResizable(true)
                 .setMovable(true)
-                .setTitle("Edit Tailwind Classes")
                 .setCancelCallback(() -> {
                     editorFactory.releaseEditor(popupEditor);
                     rangeMarker.dispose();
