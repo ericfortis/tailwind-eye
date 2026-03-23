@@ -40,8 +40,6 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 			public void visitElement(@NotNull PsiElement element) {
 				if (element instanceof XmlTag tag)
 					processTag(tag, keepRanges);
-				else if (element instanceof XmlAttribute attribute)
-					processAttribute(attribute, keepRanges);
 
 				super.visitElement(element);
 			}
@@ -102,6 +100,10 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 			else
 				keepRanges.add(firstChild.getTextRange());
 
+		}
+
+		for (XmlAttribute attribute : tag.getAttributes()) {
+			processAttribute(attribute, keepRanges);
 		}
 	}
 
