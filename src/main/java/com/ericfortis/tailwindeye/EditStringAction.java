@@ -68,10 +68,16 @@ public class EditStringAction extends AnAction {
                 .setRequestFocus(true)
                 .setResizable(true)
                 .setMovable(true)
-                .setCancelCallback(() -> {
-                    editorFactory.releaseEditor(popupEditor);
-                    rangeMarker.dispose();
-                    return true;
+                .addListener(new com.intellij.openapi.ui.popup.JBPopupListener() {
+                    @Override
+                    public void onClosed(@NotNull com.intellij.openapi.ui.popup.LightweightWindowEvent event) {
+                        if (!popupEditor.isDisposed()) {
+                            editorFactory.releaseEditor(popupEditor);
+                        }
+                        if (rangeMarker.isValid()) {
+                            rangeMarker.dispose();
+                        }
+                    }
                 })
                 .createPopup();
 
