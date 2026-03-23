@@ -41,10 +41,10 @@ public class EditStringAction extends AnAction {
         // For simplicity, let's look for a PsiElement that contains quotes or is a string literal
         // Since we don't know the exact PSI structure for all languages, 
         // we can look at the text around the caret for quotes.
-        
+
         TextRange foundRange = findStringRange(editor.getDocument(), offset);
         if (foundRange == null) return;
-        
+
         // Use a RangeMarker to track the range as the document is edited
         com.intellij.openapi.editor.RangeMarker rangeMarker = editor.getDocument().createRangeMarker(foundRange);
 
@@ -56,7 +56,7 @@ public class EditStringAction extends AnAction {
         Document tempDocument = EditorFactory.getInstance().createDocument(popupContent);
         EditorFactory editorFactory = EditorFactory.getInstance();
         EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, FileTypeManager.getInstance().getFileTypeByExtension("txt"), false);
-        
+
         popupEditor.getSettings().setFoldingOutlineShown(false);
         popupEditor.getComponent().setPreferredSize(new Dimension(400, 300));
 
@@ -91,10 +91,9 @@ public class EditStringAction extends AnAction {
                             .map(String::trim)
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.joining(" "));
-                    
-                    WriteCommandAction.runWriteCommandAction(project, "Sync Tailwind Classes", null, () -> {
-                        editor.getDocument().replaceString(rangeMarker.getStartOffset(), rangeMarker.getEndOffset(), newText);
-                    });
+
+                    WriteCommandAction.runWriteCommandAction(project, "Sync Tailwind Classes", null, () ->
+                            editor.getDocument().replaceString(rangeMarker.getStartOffset(), rangeMarker.getEndOffset(), newText));
                     updatePopupSize(popup, popupEditor);
                 } finally {
                     isUpdating = false;
