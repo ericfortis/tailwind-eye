@@ -57,14 +57,13 @@ public class EditStringAction extends AnAction {
         String classesContent = Arrays.stream(originalContent.split("\\s+"))
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.joining("\n"));
-        
-        // Wrap in @apply for better Tailwind completion
-        // TODO this helps for warnings, but doesn't help to trigger autocompletions
-        String popupContent = ".dummy {\n  @apply " + classesContent + ";\n}";
 
-        // Use CSS file type to get Tailwind completion
-        FileType cssFileType = FileTypeManager.getInstance().getFileTypeByExtension("css");
-        PsiFile dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.css", cssFileType, popupContent, LocalTimeCounter.currentTime(), true);
+
+        // FIXME doesn't autocomplete either
+        String popupContent = "function () { return <div className=\""  + classesContent + "\"/> }";
+
+        FileType jsxFileType = FileTypeManager.getInstance().getFileTypeByExtension("jsx");
+        PsiFile dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.jsx", jsxFileType, popupContent, LocalTimeCounter.currentTime(), true);
         
         // Try to set the context to the original file to help completion providers
         dummyFile.putUserData(com.intellij.openapi.util.Key.create("original.psi.file"), psiFile);
@@ -74,7 +73,7 @@ public class EditStringAction extends AnAction {
                 : EditorFactory.getInstance().createDocument(popupContent);
 
         EditorFactory editorFactory = EditorFactory.getInstance();
-        EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, cssFileType, false);
+        EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, jsxFileType, false);
         
         popupEditor.getSettings().setLineNumbersShown(true);
         popupEditor.getSettings().setFoldingOutlineShown(false);
