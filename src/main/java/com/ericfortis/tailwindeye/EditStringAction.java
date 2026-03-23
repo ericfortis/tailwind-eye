@@ -39,10 +39,10 @@ public class EditStringAction extends AnAction {
         // For simplicity, let's look for a PsiElement that contains quotes or is a string literal
         // Since we don't know the exact PSI structure for all languages, 
         // we can look at the text around the caret for quotes.
-        
+
         TextRange foundRange = findStringRange(editor.getDocument(), offset);
         if (foundRange == null) return;
-        
+
         String originalContent = editor.getDocument().getText(foundRange);
         List<String> classes = Arrays.stream(originalContent.split("\\s+"))
                 .filter(s -> !s.isEmpty())
