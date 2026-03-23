@@ -59,21 +59,20 @@ public class EditStringAction extends AnAction {
                 .collect(Collectors.joining("\n"));
 
 
-        // FIXME doesn't autocomplete either
-        String popupContent = "function () { return <div className=\""  + classesContent + "\"/> }";
+        // Create a dummy HTML file as it is a common host for Tailwind CSS
+        String popupContent = "<div class=\"" + classesContent + "\"></div>";
+        FileType htmlFileType = FileTypeManager.getInstance().getFileTypeByExtension("html");
+        PsiFile dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.html", htmlFileType, popupContent, LocalTimeCounter.currentTime(), true);
 
-        FileType jsxFileType = FileTypeManager.getInstance().getFileTypeByExtension("jsx");
-        PsiFile dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.jsx", jsxFileType, popupContent, LocalTimeCounter.currentTime(), true);
-        
-        // Try to set the context to the original file to help completion providers
+        // Crucial: help Tailwind find the context it needs (like node_modules, tailwind.config.js)
         dummyFile.putUserData(com.intellij.openapi.util.Key.create("original.psi.file"), psiFile);
-        
-        final Document tempDocument = PsiDocumentManager.getInstance(project).getDocument(dummyFile) != null 
-                ? PsiDocumentManager.getInstance(project).getDocument(dummyFile) 
+
+        final Document tempDocument = PsiDocumentManager.getInstance(project).getDocument(dummyFile) != null
+                ? PsiDocumentManager.getInstance(project).getDocument(dummyFile)
                 : EditorFactory.getInstance().createDocument(popupContent);
 
         EditorFactory editorFactory = EditorFactory.getInstance();
-        EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, jsxFileType, false);
+        EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, htmlFileType, false);
         
         popupEditor.getSettings().setLineNumbersShown(true);
         popupEditor.getSettings().setFoldingOutlineShown(false);
@@ -124,11 +123,11 @@ public class EditStringAction extends AnAction {
     }
 
     private String extractClasses(String fullText) {
-        int start = fullText.indexOf("@apply");
+        int start = fullText.indexOf("class=\"");
         if (start == -1) return fullText;
-        start += "@apply".length();
-        int end = fullText.lastIndexOf(';');
-        if (end == -1 || end <= start) return fullText.substring(start);
+        start += "class=\"".length();
+        int end = fullText.indexOf("\"", start);
+        if (end == -1) return fullText.substring(start);
         return fullText.substring(start, end);
     }
 
