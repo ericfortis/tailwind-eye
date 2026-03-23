@@ -36,8 +36,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
 					XmlAttributeValue value = attribute.getValueElement();
 					if (value != null) {
 						TextRange range = value.getValueTextRange();
-						if (range.getStartOffset() < range.getEndOffset())
-							descriptors.add(new FoldingDescriptor(element.getNode(), range, TAILWIND_GROUP));
+						descriptors.add(new FoldingDescriptor(element.getNode(), range, TAILWIND_GROUP));
 					}
 				}
 				super.visitElement(element);
