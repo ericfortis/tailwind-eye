@@ -7,13 +7,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
+import com.intellij.psi.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Annotator implements com.intellij.lang.annotation.Annotator {
 
@@ -21,13 +21,11 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 		 "TAILWIND_EYE_TEXT"
 	);
 
-	private static final Pattern OPENING_TAG_PATTERN = Pattern.compile("<[a-zA-Z0-9_-]+");
-	private static final Pattern CLASS_NAME_PATTERN = Pattern.compile("className\\s*[=:]\\s*([\"'])(.*?)\\1");
-
 	@Override
-	public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-		if (!(element instanceof PsiFile psiFile))
+	public void annotate(@NotNull PsiElement root, @NotNull AnnotationHolder holder) {
+		if (!(root instanceof PsiFile psiFile)) {
 			return;
+		}
 
 		Project project = psiFile.getProject();
 		CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
@@ -35,18 +33,21 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 		if (mode != CoreState.FadingMode.NON_STYLING)
 			return;
 
-		String text = psiFile.getText();
 		List<TextRange> keepRanges = new ArrayList<>();
 
-		Matcher tagMatcher = OPENING_TAG_PATTERN.matcher(text);
-		while (tagMatcher.find())
-			keepRanges.add(new TextRange(tagMatcher.start(), tagMatcher.end()));
+		root.accept(new PsiRecursiveElementWalkingVisitor() {
+			@Override
+			public void visitElement(@NotNull PsiElement element) {
+				if (element instanceof XmlTag tag)
+					processTag(tag, keepRanges);
+				else if (element instanceof XmlAttribute attribute)
+					processAttribute(attribute, keepRanges);
 
-		Matcher classMatcher = CLASS_NAME_PATTERN.matcher(text);
-		while (classMatcher.find())
-			if (classMatcher.groupCount() >= 2)
-				keepRanges.add(new TextRange(classMatcher.start(2), classMatcher.end(2)));
+				super.visitElement(element);
+			}
+		});
 
+		String text = psiFile.getText();
 		if (keepRanges.isEmpty()) {
 			if (!text.isEmpty())
 				annotateFaded(0, text.length(), holder);
@@ -56,8 +57,24 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 		// Sort keepRanges by start offset
 		keepRanges.sort(Comparator.comparingInt(TextRange::getStartOffset));
 
+		// Merge overlapping or adjacent ranges
+		List<TextRange> mergedRanges = new ArrayList<>();
+		if (!keepRanges.isEmpty()) {
+			TextRange current = keepRanges.getFirst();
+			for (int i = 1; i < keepRanges.size(); i++) {
+				TextRange next = keepRanges.get(i);
+				if (next.getStartOffset() <= current.getEndOffset())
+					current = current.union(next);
+				else {
+					mergedRanges.add(current);
+					current = next;
+				}
+			}
+			mergedRanges.add(current);
+		}
+
 		int lastEnd = 0;
-		for (TextRange range : keepRanges) {
+		for (TextRange range : mergedRanges) {
 			if (range.getStartOffset() > lastEnd)
 				annotateFaded(lastEnd, range.getStartOffset(), holder);
 			lastEnd = Math.max(lastEnd, range.getEndOffset());
@@ -73,5 +90,40 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 				 .range(new TextRange(start, end))
 				 .textAttributes(FADED_TEXT)
 				 .create();
+	}
+
+	private void processTag(XmlTag tag, List<TextRange> keepRanges) {
+		// Add opening tag range (e.g., <div)
+		PsiElement firstChild = tag.getFirstChild();
+		if (firstChild instanceof XmlToken token && token.getTokenType() == XmlTokenType.XML_START_TAG_START) {
+			PsiElement nameElement = firstChild.getNextSibling();
+			if (nameElement instanceof XmlToken token2 && (token2.getTokenType() == XmlTokenType.XML_TAG_NAME || token2.getTokenType().toString().contains("TAG_NAME")))
+				keepRanges.add(new TextRange(firstChild.getTextRange().getStartOffset(), nameElement.getTextRange().getEndOffset()));
+			else
+				keepRanges.add(firstChild.getTextRange());
+
+		}
+	}
+
+	private void processAttribute(XmlAttribute attribute, List<TextRange> keepRanges) {
+		String name = attribute.getName();
+		if ("className".equals(name)) {
+			// Keep the name of the attribute
+			PsiElement nameElement = attribute.getFirstChild();
+			if (nameElement != null)
+				keepRanges.add(nameElement.getTextRange());
+
+			XmlAttributeValue value = attribute.getValueElement();
+			if (value != null) {
+				TextRange range = value.getValueTextRange();
+				if (range.getStartOffset() < range.getEndOffset())
+					keepRanges.add(range);
+				// Also keep quotes
+				PsiElement[] children = value.getChildren();
+				for (PsiElement child : children)
+					if (child instanceof XmlToken token && (token.getTokenType() == XmlTokenType.XML_ATTRIBUTE_VALUE_START_DELIMITER || token.getTokenType() == XmlTokenType.XML_ATTRIBUTE_VALUE_END_DELIMITER))
+						keepRanges.add(child.getTextRange());
+			}
+		}
 	}
 }
