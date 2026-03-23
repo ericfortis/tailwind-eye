@@ -24,7 +24,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
 
 	@Override
 	public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
-		if (!(root instanceof PsiFile)) return FoldingDescriptor.EMPTY_ARRAY;
+		if (!(root instanceof PsiFile))
+			return FoldingDescriptor.EMPTY_ARRAY;
 
 		List<FoldingDescriptor> descriptors = new ArrayList<>();
 		String text = root.getText();
