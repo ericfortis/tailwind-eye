@@ -6,7 +6,6 @@ import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
@@ -34,10 +33,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
 			public void visitElement(@NotNull PsiElement element) {
 				if (element instanceof XmlAttribute attribute && "className".equals(attribute.getName())) {
 					XmlAttributeValue value = attribute.getValueElement();
-					if (value != null) {
-						TextRange range = value.getValueTextRange();
-						descriptors.add(new FoldingDescriptor(element.getNode(), range, TAILWIND_GROUP));
-					}
+					if (value != null)
+						descriptors.add(new FoldingDescriptor(element.getNode(), value.getValueTextRange(), TAILWIND_GROUP));
 				}
 				super.visitElement(element);
 			}
