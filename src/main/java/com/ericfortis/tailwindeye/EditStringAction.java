@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.ex.EditorEx;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -18,7 +19,9 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.LocalTimeCounter;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -51,13 +54,27 @@ public class EditStringAction extends AnAction {
         com.intellij.openapi.editor.RangeMarker rangeMarker = editor.getDocument().createRangeMarker(foundRange);
 
         String originalContent = editor.getDocument().getText(foundRange);
-        String popupContent = Arrays.stream(originalContent.split("\\s+"))
+        String classesContent = Arrays.stream(originalContent.split("\\s+"))
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.joining("\n"));
+        
+        // Wrap in @apply for better Tailwind completion
+        // TODO this helps for warnings, but doesn't help to trigger autocompletions
+        String popupContent = ".dummy {\n  @apply " + classesContent + ";\n}";
 
-        Document tempDocument = EditorFactory.getInstance().createDocument(popupContent);
+        // Use CSS file type to get Tailwind completion
+        FileType cssFileType = FileTypeManager.getInstance().getFileTypeByExtension("css");
+        PsiFile dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.css", cssFileType, popupContent, LocalTimeCounter.currentTime(), true);
+        
+        // Try to set the context to the original file to help completion providers
+        dummyFile.putUserData(com.intellij.openapi.util.Key.create("original.psi.file"), psiFile);
+        
+        final Document tempDocument = PsiDocumentManager.getInstance(project).getDocument(dummyFile) != null 
+                ? PsiDocumentManager.getInstance(project).getDocument(dummyFile) 
+                : EditorFactory.getInstance().createDocument(popupContent);
+
         EditorFactory editorFactory = EditorFactory.getInstance();
-        EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, FileTypeManager.getInstance().getFileTypeByExtension("txt"), false);
+        EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, cssFileType, false);
         
         popupEditor.getSettings().setLineNumbersShown(true);
         popupEditor.getSettings().setFoldingOutlineShown(false);
@@ -85,7 +102,10 @@ public class EditStringAction extends AnAction {
                 if (isUpdating || !rangeMarker.isValid()) return;
                 isUpdating = true;
                 try {
-                    String newText = Arrays.stream(tempDocument.getText().split("\n"))
+                    String fullText = tempDocument.getText();
+                    String contentToSync = extractClasses(fullText);
+                    
+                    String newText = Arrays.stream(contentToSync.split("\n"))
                             .map(String::trim)
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.joining(" "));
@@ -102,6 +122,15 @@ public class EditStringAction extends AnAction {
 
         popup.showInBestPositionFor(editor);
         updatePopupSize(popup, popupEditor);
+    }
+
+    private String extractClasses(String fullText) {
+        int start = fullText.indexOf("@apply");
+        if (start == -1) return fullText;
+        start += "@apply".length();
+        int end = fullText.lastIndexOf(';');
+        if (end == -1 || end <= start) return fullText.substring(start);
+        return fullText.substring(start, end);
     }
 
     private void updatePopupSize(JBPopup popup, EditorEx popupEditor) {

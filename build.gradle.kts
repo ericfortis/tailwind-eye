@@ -25,6 +25,7 @@ dependencies {
     intellijPlatform {
         webstorm("2024.2")
         instrumentationTools()
+        bundledPlugin("com.intellij.tailwindcss")
     }
 }
 
