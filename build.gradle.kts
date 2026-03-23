@@ -1,25 +1,25 @@
-plugins {
-	id("java")
-	id("org.jetbrains.intellij.platform") version "2.2.1"
-}
-
-
-java {
-	toolchain {
-		targetCompatibility = JavaVersion.VERSION_21
-		sourceCompatibility = JavaVersion.VERSION_21
+	plugins {
+		id("java")
+		id("org.jetbrains.intellij.platform") version "2.2.1"
 	}
-}
 
-group = providers.gradleProperty("pluginGroup").get()
-version = providers.gradleProperty("pluginVersion").get()
 
-repositories {
-	mavenCentral()
-	intellijPlatform {
-		defaultRepositories()
+	java {
+		toolchain {
+			targetCompatibility = JavaVersion.VERSION_21
+			sourceCompatibility = JavaVersion.VERSION_21
+		}
 	}
-}
+
+	group = providers.gradleProperty("pluginGroup").get()
+	version = providers.gradleProperty("pluginVersion").get()
+
+	repositories {
+		mavenCentral()
+		intellijPlatform {
+			defaultRepositories()
+		}
+	}
 
 dependencies {
 	intellijPlatform {
@@ -32,34 +32,34 @@ dependencies {
 	testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.2")
 }
 
-intellijPlatform {
-	pluginConfiguration {
-		id.set("com.ericfortis.tailwindeye")
-		name.set("Tailwind Eye")
-		vendor {
-			name.set("ericfortis")
+	intellijPlatform {
+		pluginConfiguration {
+			id.set("com.ericfortis.tailwindeye")
+			name.set("Tailwind Eye")
+			vendor {
+				name.set("ericfortis")
+			}
+			changeNotes.set("Initial version of Tailwind Eye.")
+
+			ideaVersion {
+				sinceBuild.set("242")
+				untilBuild.set("253.*")
+			}
 		}
-		changeNotes.set("Initial version of Tailwind Eye.")
 
-		ideaVersion {
-			sinceBuild.set("242")
-			untilBuild.set("253.*")
+		pluginVerification {
+			ides {
+				recommended()
+			}
+		}
+
+		signing {
+			certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+			privateKey.set(System.getenv("PRIVATE_KEY"))
+			password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+		}
+
+		publishing {
+			token.set(System.getenv("PUBLISH_TOKEN"))
 		}
 	}
-
-	pluginVerification {
-		ides {
-			recommended()
-		}
-	}
-
-	signing {
-		certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-		privateKey.set(System.getenv("PRIVATE_KEY"))
-		password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-	}
-
-	publishing {
-		token.set(System.getenv("PUBLISH_TOKEN"))
-	}
-}
