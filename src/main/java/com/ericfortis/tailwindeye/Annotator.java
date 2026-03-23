@@ -3,7 +3,6 @@ package com.ericfortis.tailwindeye;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -23,14 +22,10 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 
 	@Override
 	public void annotate(@NotNull PsiElement root, @NotNull AnnotationHolder holder) {
-		if (!(root instanceof PsiFile psiFile)) {
+		if (!(root instanceof PsiFile psiFile))
 			return;
-		}
 
-		Project project = psiFile.getProject();
-		CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
-
-		if (mode != CoreState.FadingMode.NON_STYLING)
+		if (CoreState.getInstance(psiFile.getProject()).getFadingMode() != CoreState.FadingMode.NON_STYLING)
 			return;
 
 		List<TextRange> keepRanges = new ArrayList<>();
