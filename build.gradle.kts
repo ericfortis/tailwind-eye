@@ -26,7 +26,10 @@ dependencies {
 		webstorm("2024.2")
 		instrumentationTools()
 		bundledPlugin("com.intellij.tailwindcss")
+		testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
 	}
+	testImplementation("junit:junit:4.13.2")
+	testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.2")
 }
 
 intellijPlatform {
