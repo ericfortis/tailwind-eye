@@ -3,29 +3,22 @@ package com.ericfortis.tailwindeye;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.LocalTimeCounter;
+import com.intellij.ui.components.JBList;
+import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class EditStringAction extends AnAction {
@@ -50,94 +43,34 @@ public class EditStringAction extends AnAction {
         TextRange foundRange = findStringRange(editor.getDocument(), offset);
         if (foundRange == null) return;
         
-        // Use a RangeMarker to track the range as the document is edited
-        com.intellij.openapi.editor.RangeMarker rangeMarker = editor.getDocument().createRangeMarker(foundRange);
-
         String originalContent = editor.getDocument().getText(foundRange);
-        String classesContent = Arrays.stream(originalContent.split("\\s+"))
+        List<String> classes = Arrays.stream(originalContent.split("\\s+"))
                 .filter(s -> !s.isEmpty())
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.toList());
 
+        JBList<String> list = new JBList<>(classes);
+        list.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                label.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
+                return label;
+            }
+        });
 
-        // Create a dummy HTML file as it is a common host for Tailwind CSS
-        String popupContent = "<div class=\"" + classesContent + "\"></div>";
-        FileType htmlFileType = FileTypeManager.getInstance().getFileTypeByExtension("html");
-        PsiFile dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.html", htmlFileType, popupContent, LocalTimeCounter.currentTime(), true);
-
-        // Crucial: help Tailwind find the context it needs (like node_modules, tailwind.config.js)
-        dummyFile.putUserData(com.intellij.openapi.util.Key.create("original.psi.file"), psiFile);
-
-        final Document tempDocument = PsiDocumentManager.getInstance(project).getDocument(dummyFile) != null
-                ? PsiDocumentManager.getInstance(project).getDocument(dummyFile)
-                : EditorFactory.getInstance().createDocument(popupContent);
-
-        EditorFactory editorFactory = EditorFactory.getInstance();
-        EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, htmlFileType, false);
-        
-        popupEditor.getSettings().setLineNumbersShown(true);
-        popupEditor.getSettings().setFoldingOutlineShown(false);
-        popupEditor.getComponent().setPreferredSize(new Dimension(400, 300));
+        JBScrollPane scrollPane = new JBScrollPane(list);
+        scrollPane.setPreferredSize(new Dimension(300, Math.min(600, Math.max(200, classes.size() * 25 + 10))));
 
         JBPopup popup = JBPopupFactory.getInstance()
-                .createComponentPopupBuilder(popupEditor.getComponent(), popupEditor.getContentComponent())
+                .createComponentPopupBuilder(scrollPane, list)
                 .setFocusable(true)
                 .setRequestFocus(true)
                 .setResizable(true)
                 .setMovable(true)
-                .setTitle("Edit Tailwind Classes")
-                .setCancelCallback(() -> {
-                    editorFactory.releaseEditor(popupEditor);
-                    rangeMarker.dispose();
-                    return true;
-                })
+                .setTitle("Tailwind Classes")
                 .createPopup();
 
-        tempDocument.addDocumentListener(new DocumentListener() {
-            private boolean isUpdating = false;
-
-            @Override
-            public void documentChanged(@NotNull DocumentEvent event) {
-                if (isUpdating || !rangeMarker.isValid()) return;
-                isUpdating = true;
-                try {
-                    String fullText = tempDocument.getText();
-                    String contentToSync = extractClasses(fullText);
-                    
-                    String newText = Arrays.stream(contentToSync.split("\n"))
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .collect(Collectors.joining(" "));
-                    
-                    WriteCommandAction.runWriteCommandAction(project, "Sync Tailwind Classes", null, () -> {
-                        editor.getDocument().replaceString(rangeMarker.getStartOffset(), rangeMarker.getEndOffset(), newText);
-                    });
-                    updatePopupSize(popup, popupEditor);
-                } finally {
-                    isUpdating = false;
-                }
-            }
-        });
-
         popup.showInBestPositionFor(editor);
-        updatePopupSize(popup, popupEditor);
-    }
-
-    private String extractClasses(String fullText) {
-        int start = fullText.indexOf("class=\"");
-        if (start == -1) return fullText;
-        start += "class=\"".length();
-        int end = fullText.indexOf("\"", start);
-        if (end == -1) return fullText.substring(start);
-        return fullText.substring(start, end);
-    }
-
-    private void updatePopupSize(JBPopup popup, EditorEx popupEditor) {
-        if (popup.isDisposed()) return;
-        Dimension preferredSize = popupEditor.getComponent().getPreferredSize();
-        int lineCount = popupEditor.getDocument().getLineCount();
-        int lineHeight = popupEditor.getLineHeight();
-        int height = Math.min(600, Math.max(200, lineCount * lineHeight + 50));
-        popup.setSize(new Dimension(400, height));
     }
 
     private TextRange findStringRange(Document document, int offset) {
