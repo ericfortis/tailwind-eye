@@ -108,11 +108,8 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 		String name = attribute.getName();
 		if ("className".equals(name)) {
 			XmlAttributeValue value = attribute.getValueElement();
-			if (value != null) {
-				TextRange range = value.getValueTextRange();
-				if (range.getStartOffset() < range.getEndOffset())
-					keepRanges.add(range);
-			}
+			if (value != null)
+				keepRanges.add(value.getValueTextRange());
 		}
 	}
 }
