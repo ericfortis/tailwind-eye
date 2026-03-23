@@ -17,6 +17,8 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -37,13 +39,12 @@ public class EditStringAction extends AnAction {
 		PsiElement element = psiFile.findElementAt(offset);
 		if (element == null) return;
 
-		// Try to find a string literal or similar
-		// For simplicity, let's look for a PsiElement that contains quotes or is a string literal
-		// Since we don't know the exact PSI structure for all languages,
-		// we can look at the text around the caret for quotes.
+		// Use PSI to find the closest attribute value
+		XmlAttributeValue attributeValue = findAttributeValue(element);
+		if (attributeValue == null) return;
 
-		TextRange foundRange = findStringRange(editor.getDocument(), offset);
-		if (foundRange == null) return;
+		TextRange foundRange = attributeValue.getValueTextRange();
+		if (foundRange.isEmpty()) return;
 
 		// Use a RangeMarker to track the range as the document is edited
 		com.intellij.openapi.editor.RangeMarker rangeMarker = editor.getDocument().createRangeMarker(foundRange);
@@ -114,31 +115,19 @@ public class EditStringAction extends AnAction {
 		popup.setSize(new Dimension(400, height));
 	}
 
-	private TextRange findStringRange(Document document, int offset) {
-		String text = document.getText();
-		int start = -1;
-		int end = -1;
-
-		// Search backward for "
-		for (int i = offset; i >= 0; i--) {
-			char c = text.charAt(i);
-			if (c == '"') {
-				start = i + 1;
-				break;
+	private XmlAttributeValue findAttributeValue(PsiElement element) {
+		PsiElement current = element;
+		while (current != null && !(current instanceof PsiFile)) {
+			if (current instanceof XmlAttributeValue value) {
+				PsiElement parent = value.getParent();
+				if (parent instanceof XmlAttribute attribute) {
+					String name = attribute.getName();
+					if ("className".equals(name) || "class".equals(name)) {
+						return value;
+					}
+				}
 			}
-		}
-
-		// Search forward for "
-		for (int i = offset; i < text.length(); i++) {
-			char c = text.charAt(i);
-			if (c == '"') {
-				end = i;
-				break;
-			}
-		}
-
-		if (start != -1 && end != -1 && start <= end) {
-			return new TextRange(start, end);
+			current = current.getParent();
 		}
 		return null;
 	}

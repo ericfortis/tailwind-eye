@@ -9,18 +9,18 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FoldingBuilder extends FoldingBuilderEx {
 
 	public static final FoldingGroup TAILWIND_GROUP = FoldingGroup.newGroup("TailwindEyeFoldingGroup");
-	private static final Pattern CLASS_NAME_CONTENT_PATTERN = Pattern.compile("className\\s*[=:]\\s*([\"'])(.*?)\\1");
 
 	@Override
 	public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
@@ -28,15 +28,25 @@ public class FoldingBuilder extends FoldingBuilderEx {
 			return FoldingDescriptor.EMPTY_ARRAY;
 
 		List<FoldingDescriptor> descriptors = new ArrayList<>();
-		String text = root.getText();
-		Matcher matcher = CLASS_NAME_CONTENT_PATTERN.matcher(text);
 
-		while (matcher.find()) {
-			int start = matcher.start(2);
-			int end = matcher.end(2);
-			if (start < end)
-				descriptors.add(new FoldingDescriptor(root.getNode(), new TextRange(start, end), TAILWIND_GROUP));
-		}
+		root.accept(new PsiRecursiveElementWalkingVisitor() {
+			@Override
+			public void visitElement(@NotNull PsiElement element) {
+				if (element instanceof XmlAttribute attribute) {
+					String name = attribute.getName();
+					if ("className".equals(name) || "class".equals(name)) {
+						XmlAttributeValue value = attribute.getValueElement();
+						if (value != null) {
+							TextRange range = value.getValueTextRange();
+							if (range.getStartOffset() < range.getEndOffset()) {
+								descriptors.add(new FoldingDescriptor(element.getNode(), range, TAILWIND_GROUP));
+							}
+						}
+					}
+				}
+				super.visitElement(element);
+			}
+		});
 
 		return descriptors.toArray(new FoldingDescriptor[0]);
 	}
