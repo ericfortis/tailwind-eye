@@ -8,7 +8,6 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -23,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class EditStringAction extends AnAction {
@@ -50,17 +51,53 @@ public class EditStringAction extends AnAction {
 		com.intellij.openapi.editor.RangeMarker rangeMarker = editor.getDocument().createRangeMarker(foundRange);
 
 		String originalContent = editor.getDocument().getText(foundRange);
-		String popupContent = Arrays.stream(originalContent.split("\\s+"))
-			 .filter(s -> !s.isEmpty())
-			 .collect(Collectors.joining("\n"));
+
+		StringBuilder popupContentBuilder = new StringBuilder();
+		int relativeCaretOffset = offset - foundRange.getStartOffset();
+		int popupCaretOffset = -1;
+
+		Matcher m = Pattern.compile("\\S+").matcher(originalContent);
+		int currentPopupLength = 0;
+
+		while (m.find()) {
+			String token = m.group();
+			int tokenStart = m.start();
+			int tokenEnd = m.end();
+
+			if (!popupContentBuilder.isEmpty()) {
+				popupContentBuilder.append("\n");
+				currentPopupLength++;
+			}
+
+			int tokenStartInPopup = currentPopupLength;
+			popupContentBuilder.append(token);
+			currentPopupLength += token.length();
+
+			if (popupCaretOffset == -1) {
+				if (relativeCaretOffset < tokenStart) {
+					popupCaretOffset = tokenStartInPopup;
+				} else if (relativeCaretOffset <= tokenEnd) {
+					int diff = relativeCaretOffset - tokenStart;
+					popupCaretOffset = tokenStartInPopup + diff;
+				}
+			}
+		}
+
+		if (popupCaretOffset == -1) {
+			popupCaretOffset = popupContentBuilder.length();
+		}
+
+		String popupContent = popupContentBuilder.toString();
 
 		EditorTextField editorTextField = new EditorTextField(popupContent, project, PlainTextFileType.INSTANCE);
 		editorTextField.setOneLineMode(false);
 		editorTextField.setPreferredSize(new Dimension(400, 300));
-		
+
+		int finalPopupCaretOffset = popupCaretOffset;
 		editorTextField.addSettingsProvider(editorEx -> {
 			editorEx.getSettings().setFoldingOutlineShown(false);
 			editorEx.getSettings().setLineNumbersShown(false);
+			editorEx.getCaretModel().moveToOffset(Math.min(finalPopupCaretOffset, editorEx.getDocument().getTextLength()));
 		});
 
 		JBPopup popup = JBPopupFactory.getInstance()
