@@ -87,18 +87,7 @@ public class EditStringAction extends AnAction {
 			popupCaretOffset = popupContentBuilder.length();
 		}
 
-		String popupContent = popupContentBuilder.toString();
-
-		EditorTextField editorTextField = new EditorTextField(popupContent, project, PlainTextFileType.INSTANCE);
-		editorTextField.setOneLineMode(false);
-		editorTextField.setPreferredSize(new Dimension(400, 300));
-
-		int finalPopupCaretOffset = popupCaretOffset;
-		editorTextField.addSettingsProvider(editorEx -> {
-			editorEx.getSettings().setFoldingOutlineShown(false);
-			editorEx.getSettings().setLineNumbersShown(false);
-			editorEx.getCaretModel().moveToOffset(Math.min(finalPopupCaretOffset, editorEx.getDocument().getTextLength()));
-		});
+		EditorTextField editorTextField = getEditorTextField(popupContentBuilder, project, popupCaretOffset);
 
 		JBPopup popup = JBPopupFactory.getInstance()
 			 .createComponentPopupBuilder(editorTextField, editorTextField)
@@ -134,6 +123,21 @@ public class EditStringAction extends AnAction {
 
 		popup.showInBestPositionFor(editor);
 		updatePopupSize(popup, editorTextField);
+	}
+
+	private static @NotNull EditorTextField getEditorTextField(StringBuilder popupContentBuilder, Project project, int popupCaretOffset) {
+		String popupContent = popupContentBuilder.toString();
+
+		EditorTextField editorTextField = new EditorTextField(popupContent, project, PlainTextFileType.INSTANCE);
+		editorTextField.setOneLineMode(false);
+		editorTextField.setPreferredSize(new Dimension(400, 300));
+
+		editorTextField.addSettingsProvider(editorEx -> {
+			editorEx.getSettings().setFoldingOutlineShown(false);
+			editorEx.getSettings().setLineNumbersShown(false);
+			editorEx.getCaretModel().moveToOffset(Math.min(popupCaretOffset, editorEx.getDocument().getTextLength()));
+		});
+		return editorTextField;
 	}
 
 	private void updatePopupSize(JBPopup popup, EditorTextField editorTextField) {
