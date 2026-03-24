@@ -8,8 +8,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.fileTypes.FileType;
-
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -55,7 +54,7 @@ public class EditStringAction extends AnAction {
 
 		int relativeCaretOffset = offset - foundRange.getStartOffset();
 		PopupContentResult result = computePopupContent(originalContent, relativeCaretOffset);
-		EditorTextField editorTextField = getEditorTextField(result.content(), project, result.caretOffset(), psiFile.getFileType());
+		EditorTextField editorTextField = getEditorTextField(result.content(), project, result.caretOffset());
 
 		JBPopup popup = JBPopupFactory.getInstance()
 			 .createComponentPopupBuilder(editorTextField, editorTextField)
@@ -133,8 +132,8 @@ public class EditStringAction extends AnAction {
 		return new PopupContentResult(popupContentBuilder.toString(), popupCaretOffset);
 	}
 
-	private static @NotNull EditorTextField getEditorTextField(String popupContent, Project project, int popupCaretOffset, FileType fileType) {
-		EditorTextField editorTextField = new EditorTextField(popupContent, project, fileType);
+	private static @NotNull EditorTextField getEditorTextField(String popupContent, Project project, int popupCaretOffset) {
+		EditorTextField editorTextField = new EditorTextField(popupContent, project, FileTypeManager.getInstance().getStdFileType("HTML"));
 		editorTextField.setOneLineMode(false);
 		editorTextField.setPreferredSize(new Dimension(400, 300));
 
