@@ -52,42 +52,9 @@ public class EditStringAction extends AnAction {
 
 		String originalContent = editor.getDocument().getText(foundRange);
 
-		StringBuilder popupContentBuilder = new StringBuilder();
 		int relativeCaretOffset = offset - foundRange.getStartOffset();
-		int popupCaretOffset = -1;
-
-		Matcher m = Pattern.compile("\\S+").matcher(originalContent);
-		int currentPopupLength = 0;
-
-		while (m.find()) {
-			String token = m.group();
-			int tokenStart = m.start();
-			int tokenEnd = m.end();
-
-			if (!popupContentBuilder.isEmpty()) {
-				popupContentBuilder.append("\n");
-				currentPopupLength++;
-			}
-
-			int tokenStartInPopup = currentPopupLength;
-			popupContentBuilder.append(token);
-			currentPopupLength += token.length();
-
-			if (popupCaretOffset == -1) {
-				if (relativeCaretOffset < tokenStart) {
-					popupCaretOffset = tokenStartInPopup;
-				} else if (relativeCaretOffset <= tokenEnd) {
-					int diff = relativeCaretOffset - tokenStart;
-					popupCaretOffset = tokenStartInPopup + diff;
-				}
-			}
-		}
-
-		if (popupCaretOffset == -1) {
-			popupCaretOffset = popupContentBuilder.length();
-		}
-
-		EditorTextField editorTextField = getEditorTextField(popupContentBuilder, project, popupCaretOffset);
+		PopupContentResult result = computePopupContent(originalContent, relativeCaretOffset);
+		EditorTextField editorTextField = getEditorTextField(result.content(), project, result.caretOffset());
 
 		JBPopup popup = JBPopupFactory.getInstance()
 			 .createComponentPopupBuilder(editorTextField, editorTextField)
@@ -125,8 +92,47 @@ public class EditStringAction extends AnAction {
 		updatePopupSize(popup, editorTextField);
 	}
 
-	private static @NotNull EditorTextField getEditorTextField(StringBuilder popupContentBuilder, Project project, int popupCaretOffset) {
-		String popupContent = popupContentBuilder.toString();
+	private record PopupContentResult(String content, int caretOffset) {}
+
+	private PopupContentResult computePopupContent(String originalContent, int relativeCaretOffset) {
+		StringBuilder popupContentBuilder = new StringBuilder();
+		int popupCaretOffset = -1;
+
+		Matcher m = Pattern.compile("\\S+").matcher(originalContent);
+		int currentPopupLength = 0;
+
+		while (m.find()) {
+			String token = m.group();
+			int tokenStart = m.start();
+			int tokenEnd = m.end();
+
+			if (!popupContentBuilder.isEmpty()) {
+				popupContentBuilder.append("\n");
+				currentPopupLength++;
+			}
+
+			int tokenStartInPopup = currentPopupLength;
+			popupContentBuilder.append(token);
+			currentPopupLength += token.length();
+
+			if (popupCaretOffset == -1) {
+				if (relativeCaretOffset < tokenStart) {
+					popupCaretOffset = tokenStartInPopup;
+				} else if (relativeCaretOffset <= tokenEnd) {
+					int diff = relativeCaretOffset - tokenStart;
+					popupCaretOffset = tokenStartInPopup + diff;
+				}
+			}
+		}
+
+		if (popupCaretOffset == -1) {
+			popupCaretOffset = popupContentBuilder.length();
+		}
+
+		return new PopupContentResult(popupContentBuilder.toString(), popupCaretOffset);
+	}
+
+	private static @NotNull EditorTextField getEditorTextField(String popupContent, Project project, int popupCaretOffset) {
 
 		EditorTextField editorTextField = new EditorTextField(popupContent, project, PlainTextFileType.INSTANCE);
 		editorTextField.setOneLineMode(false);
