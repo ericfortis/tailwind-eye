@@ -6,11 +6,10 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.ex.EditorEx;
-import com.intellij.openapi.fileTypes.FileTypeManager;
+import com.intellij.openapi.fileTypes.PlainTextFileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -19,6 +18,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
+import com.intellij.ui.EditorTextField;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -54,32 +54,24 @@ public class EditStringAction extends AnAction {
 			 .filter(s -> !s.isEmpty())
 			 .collect(Collectors.joining("\n"));
 
-		Document tempDocument = EditorFactory.getInstance().createDocument(popupContent);
-		EditorFactory editorFactory = EditorFactory.getInstance();
-		EditorEx popupEditor = (EditorEx) editorFactory.createEditor(tempDocument, project, FileTypeManager.getInstance().getFileTypeByExtension("txt"), false);
-
-		popupEditor.getSettings().setFoldingOutlineShown(false);
-		popupEditor.getComponent().setPreferredSize(new Dimension(400, 300));
+		EditorTextField editorTextField = new EditorTextField(popupContent, project, PlainTextFileType.INSTANCE);
+		editorTextField.setOneLineMode(false);
+		editorTextField.setPreferredSize(new Dimension(400, 300));
+		
+		editorTextField.addSettingsProvider(editorEx -> {
+			editorEx.getSettings().setFoldingOutlineShown(false);
+			editorEx.getSettings().setLineNumbersShown(false);
+		});
 
 		JBPopup popup = JBPopupFactory.getInstance()
-			 .createComponentPopupBuilder(popupEditor.getComponent(), popupEditor.getContentComponent())
+			 .createComponentPopupBuilder(editorTextField, editorTextField)
 			 .setFocusable(true)
 			 .setRequestFocus(true)
 			 .setResizable(true)
 			 .setMovable(true)
-			 .addListener(new com.intellij.openapi.ui.popup.JBPopupListener() {
-				 @Override
-				 public void onClosed(@NotNull com.intellij.openapi.ui.popup.LightweightWindowEvent event) {
-					 if (!popupEditor.isDisposed()) {
-						 editorFactory.releaseEditor(popupEditor);
-					 }
-					 if (rangeMarker.isValid()) {
-						 rangeMarker.dispose();
-					 }
-				 }
-			 })
 			 .createPopup();
 
+		Document tempDocument = editorTextField.getDocument();
 		tempDocument.addDocumentListener(new DocumentListener() {
 			private boolean isUpdating = false;
 
@@ -95,7 +87,8 @@ public class EditStringAction extends AnAction {
 
 					WriteCommandAction.runWriteCommandAction(project, "Sync Tailwind Classes", null, () ->
 						 editor.getDocument().replaceString(rangeMarker.getStartOffset(), rangeMarker.getEndOffset(), newText));
-					updatePopupSize(popup, popupEditor);
+					
+					updatePopupSize(popup, editorTextField);
 				} finally {
 					isUpdating = false;
 				}
@@ -103,14 +96,17 @@ public class EditStringAction extends AnAction {
 		});
 
 		popup.showInBestPositionFor(editor);
-		updatePopupSize(popup, popupEditor);
+		updatePopupSize(popup, editorTextField);
 	}
 
-	private void updatePopupSize(JBPopup popup, EditorEx popupEditor) {
+	private void updatePopupSize(JBPopup popup, EditorTextField editorTextField) {
 		if (popup.isDisposed())
 			return;
-		int lineCount = popupEditor.getDocument().getLineCount();
-		int lineHeight = popupEditor.getLineHeight();
+		Editor editor = editorTextField.getEditor();
+		if (editor == null) return;
+		
+		int lineCount = editor.getDocument().getLineCount();
+		int lineHeight = editor.getLineHeight();
 		int height = Math.min(600, Math.max(200, lineCount * lineHeight + 50));
 		popup.setSize(new Dimension(400, height));
 	}
