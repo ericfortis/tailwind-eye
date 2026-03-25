@@ -23,9 +23,7 @@
 
 dependencies {
 	intellijPlatform {
-		webstorm("2024.2")
-		instrumentationTools()
-		bundledPlugin("com.intellij.tailwindcss")
+		webstorm("2026.1")
 		testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
 	}
 	testImplementation("junit:junit:4.13.2")
@@ -42,8 +40,7 @@ dependencies {
 			changeNotes.set("Initial version of Tailwind Eye.")
 
 			ideaVersion {
-				sinceBuild.set("242")
-				untilBuild.set("253.*")
+				sinceBuild.set("261")
 			}
 		}
 
