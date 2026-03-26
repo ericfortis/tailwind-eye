@@ -19,8 +19,7 @@ public class ToggleAction extends AnAction {
 		if (project == null) return;
 
 		CoreState state = CoreState.getInstance(project);
-		CoreState.FadingMode currentMode = state.getFadingMode();
-		CoreState.FadingMode nextMode = Objects.requireNonNull(currentMode) == CoreState.FadingMode.NON_STYLING
+		CoreState.FadingMode nextMode = state.getFadingMode() == CoreState.FadingMode.NON_STYLING
 			 ? CoreState.FadingMode.FOLD_CLASS_NAME
 			 : CoreState.FadingMode.NON_STYLING;
 
