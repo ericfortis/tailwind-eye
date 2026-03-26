@@ -5,7 +5,6 @@ import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.SyntaxTraverser;
@@ -37,8 +36,7 @@ public class ClassNameFolding extends FoldingBuilderEx {
 
 	@Override
 	public boolean isCollapsedByDefault(@NotNull ASTNode node) {
-		Project project = node.getPsi().getProject();
-		CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
-		return mode == CoreState.FadingMode.FOLD_CLASS_NAME;
+		return CoreState.getInstance(node.getPsi().getProject()).getFadingMode()
+			 == CoreState.FadingMode.FOLD_CLASS_NAME;
 	}
 }
