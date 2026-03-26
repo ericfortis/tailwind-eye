@@ -1,6 +1,5 @@
 package com.ericfortis.tailwindeye;
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -25,10 +24,5 @@ public class ToggleAction extends AnAction {
 			for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
 				region.setExpanded(shouldExpand);
 		});
-	}
-
-	@Override
-	public @NotNull ActionUpdateThread getActionUpdateThread() {
-		return ActionUpdateThread.BGT;
 	}
 }
