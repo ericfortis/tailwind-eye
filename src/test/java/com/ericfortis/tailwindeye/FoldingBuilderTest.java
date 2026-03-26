@@ -1,7 +1,7 @@
 package com.ericfortis.tailwindeye;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.intellij.lang.folding.FoldingDescriptor;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 public class FoldingBuilderTest extends BasePlatformTestCase {
 	public void testFoldingRegions() {
