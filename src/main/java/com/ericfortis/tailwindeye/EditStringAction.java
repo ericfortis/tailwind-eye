@@ -150,10 +150,10 @@ public class EditStringAction extends AnAction {
 			return;
 		Editor editor = editorTextField.getEditor();
 		if (editor == null) return;
-		
+
 		int lineCount = editor.getDocument().getLineCount();
 		int lineHeight = editor.getLineHeight();
-		int height = Math.min(600, Math.max(200, lineCount * lineHeight + 50));
+		int height = Math.clamp(lineCount * lineHeight + 50, 200, 600);
 		popup.setSize(new Dimension(400, height));
 	}
 
