@@ -11,14 +11,15 @@ import org.jetbrains.annotations.NotNull;
 public class ToggleAction extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
+		Editor editor = e.getData(CommonDataKeys.EDITOR);
+		if (editor == null) return;
+
 		Project project = e.getProject();
 		if (project == null) return;
 
 		CoreState.FadingMode nextMode = CoreState.getInstance(project).toggleFadingMode();
 		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
 
-		Editor editor = e.getData(CommonDataKeys.EDITOR);
-		if (editor == null) return;
 		FoldingModelEx foldingModel = (FoldingModelEx) editor.getFoldingModel();
 		foldingModel.runBatchFoldingOperation(() -> {
 			for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
