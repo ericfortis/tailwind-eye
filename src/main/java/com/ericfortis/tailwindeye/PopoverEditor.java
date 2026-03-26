@@ -164,9 +164,8 @@ public class PopoverEditor extends AnAction {
 				PsiElement parent = value.getParent();
 				if (parent instanceof XmlAttribute attribute) {
 					String name = attribute.getName();
-					if ("className".equals(name) || "class".equals(name)) {
+					if ("className".equals(name))
 						return value;
-					}
 				}
 			}
 			current = current.getParent();
