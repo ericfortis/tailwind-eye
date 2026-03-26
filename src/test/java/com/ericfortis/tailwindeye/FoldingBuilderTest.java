@@ -28,10 +28,8 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         );
         
         boolean found = false;
-        for (FoldingDescriptor ignored : descriptors) {
-            // Check if the range matches the expected className value
-            // <tag className="bg-red-500 p-4">Hello</tag>
-            // range should be for "bg-red-500 p-4"
+        for (FoldingDescriptor descriptor : descriptors) {
+            assertEquals("className=\"…\"", builder.getPlaceholderText(descriptor.getElement()));
             found = true;
             break;
         }
@@ -91,7 +89,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
                 false
         );
         
-        // In XML context, className="" value range includes the quotes, so length is 2.
         assertEquals("Should have folding descriptor for empty className quotes in XML", 1, descriptors.length);
+        assertEquals("className=\"…\"", builder.getPlaceholderText(descriptors[0].getElement()));
     }
 }

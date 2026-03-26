@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +30,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
 		root.accept(new PsiRecursiveElementWalkingVisitor() {
 			@Override
 			public void visitElement(@NotNull PsiElement element) {
-				if (element instanceof XmlAttribute attribute && "className".equals(attribute.getName())) {
-					XmlAttributeValue value = attribute.getValueElement();
-					if (value != null)
-						descriptors.add(new FoldingDescriptor(element.getNode(), value.getValueTextRange(), TAILWIND_GROUP));
-				}
+				if (element instanceof XmlAttribute attribute && "className".equals(attribute.getName()))
+					descriptors.add(new FoldingDescriptor(element.getNode(), element.getTextRange(), TAILWIND_GROUP));
 				super.visitElement(element);
 			}
 		});
@@ -45,7 +41,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
 
 	@Override
 	public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
-		return "...";
+		PsiElement element = node.getPsi();
+		return "…";
 	}
 
 	@Override
