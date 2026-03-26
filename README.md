@@ -1,18 +1,17 @@
-## TODO
-- Whne runinnign in 2024.2 and focusssing on IDea (intead of webstorm) webstorm freezes. I mean running the Run Plugin task w
-
 # Tailwind Eye
-A WebStorm extension that provides a visual fading or folding effect for code. It can toggle between fading non-styling code (to focus on Tailwind classes) and folding the content of `className` strings.
+A WebStorm extension that provides a visual fading or folding effect for code. It can toggle between fading non-styling
+code (to focus on Tailwind classes) and folding the content of `className` strings.
 
 ## Motivation
-To reduce visual noise and focus on what matters, whether it's the structure of your HTML/JSX or the Tailwind styling itself.
+To reduce visual noise and focus on what matters, whether it's the structure of your HTML/JSX or the Tailwind styling
+itself.
 
 ## How to Build and Install
 
 ### 1. Build the Plugin
 This project uses Gradle. To compile the plugin and create an installable distribution, run:
 ```bash
-gradle buildPlugin
+./gradlew buildPlugin
 ```
 The resulting ZIP file will be located in:
 `build/distributions/tailwind-eye-1.0-SNAPSHOT.zip`
@@ -33,5 +32,5 @@ To install the plugin in your personal IDE (not the sandbox):
 ## Development
 To run a development instance of the IDE with the plugin pre-installed:
 ```bash
-gradle runIde
+./gradlew runIde
 ```
