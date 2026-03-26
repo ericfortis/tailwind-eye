@@ -36,7 +36,6 @@ public class ClassNameFolding extends FoldingBuilderEx {
 
 	@Override
 	public boolean isCollapsedByDefault(@NotNull ASTNode node) {
-		return CoreState.getInstance(node.getPsi().getProject()).getFadingMode()
-			 == CoreState.FadingMode.FOLD_CLASS_NAME;
+		return true;
 	}
 }
