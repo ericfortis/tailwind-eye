@@ -41,7 +41,6 @@ public class FoldingBuilder extends FoldingBuilderEx {
 
 	@Override
 	public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
-		PsiElement element = node.getPsi();
 		return "…";
 	}
 
