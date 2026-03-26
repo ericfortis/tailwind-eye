@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoldingBuilder extends FoldingBuilderEx {
+public class ClassNameFolding extends FoldingBuilderEx {
 
 	public static final FoldingGroup TAILWIND_GROUP = FoldingGroup.newGroup("TailwindEyeFoldingGroup");
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Annotator implements com.intellij.lang.annotation.Annotator {
+public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 
 	private static final TextAttributesKey FADED_TEXT = TextAttributesKey.createTextAttributesKey(
 		 "TAILWIND_EYE_TEXT"

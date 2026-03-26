@@ -24,13 +24,11 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.foldingBuilder language="Vue" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
-    <lang.foldingBuilder language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
-    <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.FoldingBuilder"/>
+    <lang.foldingBuilder language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.ClassNameFolding"/>
+    <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.ClassNameFolding"/>
 
-    <annotator language="Vue" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
-    <annotator language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
-    <annotator language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.Annotator"/>
+    <annotator language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.SyntaxFader"/>
+    <annotator language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.SyntaxFader"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>

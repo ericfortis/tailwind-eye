@@ -20,7 +20,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         // If the test environment doesn't have Vue or JSX plugins loaded, it won't work.
         
         // Let's try to manually invoke buildFoldRegions
-        FoldingBuilder builder = new FoldingBuilder();
+        ClassNameFolding builder = new ClassNameFolding();
         FoldingDescriptor[] descriptors = builder.buildFoldRegions(
                 myFixture.getFile(), 
                 myFixture.getEditor().getDocument(), 
@@ -41,7 +41,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         myFixture.configureByText("test.xml",
                 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
         
-        FoldingBuilder builder = new FoldingBuilder();
+        ClassNameFolding builder = new ClassNameFolding();
         FoldingDescriptor[] descriptors = builder.buildFoldRegions(
                 myFixture.getFile(), 
                 myFixture.getEditor().getDocument(), 
@@ -56,7 +56,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         myFixture.configureByText("test.xml",
                 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
         
-        FoldingBuilder builder = new FoldingBuilder();
+        ClassNameFolding builder = new ClassNameFolding();
         FoldingDescriptor[] descriptors = builder.buildFoldRegions(
                 myFixture.getFile(), 
                 myFixture.getEditor().getDocument(), 
@@ -69,7 +69,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         myFixture.configureByText("test.xml",
                 "<tag id=\"main\" title=\"Home\">Hello</tag>");
         
-        FoldingBuilder builder = new FoldingBuilder();
+        ClassNameFolding builder = new ClassNameFolding();
         FoldingDescriptor[] descriptors = builder.buildFoldRegions(
                 myFixture.getFile(), 
                 myFixture.getEditor().getDocument(), 
@@ -82,7 +82,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         myFixture.configureByText("test.xml",
                 "<tag className=\"\">Hello</tag>");
         
-        FoldingBuilder builder = new FoldingBuilder();
+        ClassNameFolding builder = new ClassNameFolding();
         FoldingDescriptor[] descriptors = builder.buildFoldRegions(
                 myFixture.getFile(), 
                 myFixture.getEditor().getDocument(), 
