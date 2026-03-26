@@ -86,7 +86,7 @@ public class EditStringAction extends AnAction {
 					isUpdating = false;
 				}
 			}
-		});
+		}, popup);
 
 		popup.showInBestPositionFor(editor);
 		updatePopupSize(popup, editorTextField);
@@ -153,8 +153,8 @@ public class EditStringAction extends AnAction {
 
 		int lineCount = editor.getDocument().getLineCount();
 		int lineHeight = editor.getLineHeight();
-		int height = Math.clamp(lineCount * lineHeight + 50, 200, 600);
-		popup.setSize(new Dimension(400, height));
+		long height = Math.clamp((long) lineCount * lineHeight + 50, 200, 600);
+		popup.setSize(new Dimension(400, (int) height));
 	}
 
 	private XmlAttributeValue findAttributeValue(PsiElement element) {
