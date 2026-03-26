@@ -87,13 +87,11 @@ public class Annotator implements com.intellij.lang.annotation.Annotator {
 		}
 	}
 
-
 	private void annotateFaded(int start, int end, AnnotationHolder holder) {
-		if (start < end) {
+		if (start < end)
 			holder.newAnnotation(HighlightSeverity.TEXT_ATTRIBUTES, "")
 				 .range(new TextRange(start, end))
 				 .textAttributes(FADED_TEXT)
 				 .create();
-		}
 	}
 }
