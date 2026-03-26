@@ -13,14 +13,18 @@ public final class CoreState implements PersistentStateComponent<CoreState.Inner
 
 	public enum FadingMode {
 		NON_STYLING,
-		FOLD_CLASS_NAME
+		FOLD_CLASS_NAME;
+
+		public FadingMode next() {
+			return this == NON_STYLING ? FOLD_CLASS_NAME : NON_STYLING;
+		}
 	}
 
-	public static class InnerState {
+	public static final class InnerState {
 		public FadingMode fadingMode = FadingMode.FOLD_CLASS_NAME;
 	}
 
-	private InnerState myState = new InnerState();
+	private InnerState state = new InnerState();
 
 	public static CoreState getInstance(@NotNull Project project) {
 		return project.getService(CoreState.class);
@@ -28,19 +32,24 @@ public final class CoreState implements PersistentStateComponent<CoreState.Inner
 
 	@Override
 	public @Nullable InnerState getState() {
-		return myState;
+		return state;
 	}
 
 	@Override
 	public void loadState(@NotNull InnerState state) {
-		myState = state;
+		this.state = state;
 	}
 
 	public FadingMode getFadingMode() {
-		return myState.fadingMode;
+		return state.fadingMode;
+	}
+
+	public FadingMode toggleFadingMode() {
+		state.fadingMode = state.fadingMode.next();
+		return state.fadingMode;
 	}
 
 	public void setFadingMode(FadingMode mode) {
-		myState.fadingMode = mode;
+		state.fadingMode = mode;
 	}
 }
