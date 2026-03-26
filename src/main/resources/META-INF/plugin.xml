@@ -16,7 +16,7 @@
       <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
     </action>
     <action id="TailwindEye.EditString"
-            class="com.ericfortis.tailwindeye.EditStringAction"
+            class="com.ericfortis.tailwindeye.PopoverEditor"
             text="Edit Tailwind Classes"
             description="Edit tailwind classes in a floating editor">
       <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
@@ -32,6 +32,6 @@
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>
-    <colorSettingsPage implementation="com.ericfortis.tailwindeye.ColorSettingsPage"/>
+    <colorSettingsPage implementation="com.ericfortis.tailwindeye.SettingsPage"/>
   </extensions>
 </idea-plugin>

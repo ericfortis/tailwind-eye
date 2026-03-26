@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Map;
 
-public class ColorSettingsPage implements com.intellij.openapi.options.colors.ColorSettingsPage {
+public class SettingsPage implements com.intellij.openapi.options.colors.ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
 		 new AttributesDescriptor("Faded text", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_TEXT"))
 	};

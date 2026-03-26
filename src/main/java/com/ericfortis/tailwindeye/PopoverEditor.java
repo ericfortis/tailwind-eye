@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class EditStringAction extends AnAction {
+public class PopoverEditor extends AnAction {
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
