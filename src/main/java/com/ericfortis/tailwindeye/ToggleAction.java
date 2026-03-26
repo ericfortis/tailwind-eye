@@ -1,6 +1,5 @@
 package com.ericfortis.tailwindeye;
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -9,8 +8,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ex.FoldingModelEx;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class ToggleAction extends AnAction {
 	@Override
@@ -25,8 +22,6 @@ public class ToggleAction extends AnAction {
 
 		state.setFadingMode(nextMode);
 		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
-
-		DaemonCodeAnalyzer.getInstance(project).restart();
 
 		Editor editor = e.getData(CommonDataKeys.EDITOR);
 		if (editor != null) {
