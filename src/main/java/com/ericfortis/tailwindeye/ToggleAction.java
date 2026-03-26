@@ -24,6 +24,7 @@ public class ToggleAction extends AnAction {
 			 : CoreState.FadingMode.NON_STYLING;
 
 		state.setFadingMode(nextMode);
+		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
 
 		DaemonCodeAnalyzer.getInstance(project).restart();
 
@@ -31,9 +32,8 @@ public class ToggleAction extends AnAction {
 		if (editor != null) {
 			FoldingModelEx foldingModel = (FoldingModelEx) editor.getFoldingModel();
 			foldingModel.runBatchFoldingOperation(() -> {
-				for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getAllFoldRegions())
-					if (ClassNameFolding.TAILWIND_GROUP.equals(region.getGroup()))
-						region.setExpanded(nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
+				for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
+					region.setExpanded(shouldExpand);
 			});
 		}
 	}
