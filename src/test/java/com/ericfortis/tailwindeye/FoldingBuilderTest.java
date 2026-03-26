@@ -4,12 +4,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.intellij.lang.folding.FoldingDescriptor;
 
 public class FoldingBuilderTest extends BasePlatformTestCase {
-
-	@Override
-	protected String getTestDataPath() {
-		return "src/test/resources/testData/folding";
-	}
-
 	public void testFoldingRegions() {
 		// Use a more explicit XML-like tag that might be picked up by the base XML support
 		myFixture.configureByText("test.xml",
