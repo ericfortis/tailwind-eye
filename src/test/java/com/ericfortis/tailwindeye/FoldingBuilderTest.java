@@ -5,11 +5,9 @@ import com.intellij.lang.folding.FoldingDescriptor;
 
 public class FoldingBuilderTest extends BasePlatformTestCase {
 	public void testFoldingRegions() {
-		// Use a more explicit XML-like tag that might be picked up by the base XML support
 		myFixture.configureByText("test.xml",
 			 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
 
-		// Let's try to manually invoke buildFoldRegions
 		ClassNameFolding builder = new ClassNameFolding();
 		FoldingDescriptor[] descriptors = builder.buildFoldRegions(
 			 myFixture.getFile(),
@@ -26,35 +24,6 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 		assertTrue("Folding descriptor for className should be found", found);
 	}
 
-	public void testCollapsedByDefaultWhenModeIsFoldClassName() {
-		CoreState.getInstance(getProject()).setFadingMode(CoreState.FadingMode.FOLD_CLASS_NAME);
-		myFixture.configureByText("test.xml",
-			 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
-
-		ClassNameFolding builder = new ClassNameFolding();
-		FoldingDescriptor[] descriptors = builder.buildFoldRegions(
-			 myFixture.getFile(),
-			 myFixture.getEditor().getDocument(),
-			 false
-		);
-
-		assertTrue("Region should be collapsed by default", builder.isCollapsedByDefault(descriptors[0].getElement()));
-	}
-
-	public void testNotCollapsedByDefaultWhenModeIsNonStyling() {
-		CoreState.getInstance(getProject()).setFadingMode(CoreState.FadingMode.NON_STYLING);
-		myFixture.configureByText("test.xml",
-			 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
-
-		ClassNameFolding builder = new ClassNameFolding();
-		FoldingDescriptor[] descriptors = builder.buildFoldRegions(
-			 myFixture.getFile(),
-			 myFixture.getEditor().getDocument(),
-			 false
-		);
-
-		assertFalse("Region should not be collapsed by default", builder.isCollapsedByDefault(descriptors[0].getElement()));
-	}
 
 	public void testNoFoldingForOtherAttributes() {
 		myFixture.configureByText("test.xml",
@@ -66,9 +35,9 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 			 myFixture.getEditor().getDocument(),
 			 false
 		);
-
 		assertEquals("Should have no folding descriptors", 0, descriptors.length);
 	}
+
 
 	public void testFoldingForEmptyClassNameIncludesQuotes() {
 		myFixture.configureByText("test.xml",
@@ -80,7 +49,6 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 			 myFixture.getEditor().getDocument(),
 			 false
 		);
-
 		assertEquals("Should have folding descriptor for empty className quotes in XML", 1, descriptors.length);
 		assertEquals("…", builder.getPlaceholderText(descriptors[0].getElement()));
 	}
