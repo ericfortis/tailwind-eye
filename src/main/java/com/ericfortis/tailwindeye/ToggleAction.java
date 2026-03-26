@@ -10,6 +10,8 @@ import com.intellij.openapi.editor.ex.FoldingModelEx;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class ToggleAction extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
@@ -18,17 +20,12 @@ public class ToggleAction extends AnAction {
 
 		CoreState state = CoreState.getInstance(project);
 		CoreState.FadingMode currentMode = state.getFadingMode();
-		CoreState.FadingMode nextMode;
-
-		switch (currentMode) {
-			case NON_STYLING -> nextMode = CoreState.FadingMode.FOLD_CLASS_NAME;
-			case FOLD_CLASS_NAME -> nextMode = CoreState.FadingMode.NON_STYLING;
-			default -> nextMode = CoreState.FadingMode.NON_STYLING;
-		}
+		CoreState.FadingMode nextMode = Objects.requireNonNull(currentMode) == CoreState.FadingMode.NON_STYLING
+			 ? CoreState.FadingMode.FOLD_CLASS_NAME
+			 : CoreState.FadingMode.NON_STYLING;
 
 		state.setFadingMode(nextMode);
 
-		// Refresh highlighting and folding in all open files
 		DaemonCodeAnalyzer.getInstance(project).restart();
 
 		Editor editor = e.getData(CommonDataKeys.EDITOR);
