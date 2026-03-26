@@ -29,7 +29,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         
         boolean found = false;
         for (FoldingDescriptor descriptor : descriptors) {
-            assertEquals("className=\"…\"", builder.getPlaceholderText(descriptor.getElement()));
+            assertEquals("…", builder.getPlaceholderText(descriptor.getElement()));
             found = true;
             break;
         }
@@ -90,6 +90,6 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
         );
         
         assertEquals("Should have folding descriptor for empty className quotes in XML", 1, descriptors.length);
-        assertEquals("className=\"…\"", builder.getPlaceholderText(descriptors[0].getElement()));
+        assertEquals("…", builder.getPlaceholderText(descriptors[0].getElement()));
     }
 }

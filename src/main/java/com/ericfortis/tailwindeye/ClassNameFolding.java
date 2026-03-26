@@ -8,13 +8,10 @@ import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
+import com.intellij.psi.SyntaxTraverser;
 import com.intellij.psi.xml.XmlAttribute;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClassNameFolding extends FoldingBuilderEx {
 
@@ -25,18 +22,12 @@ public class ClassNameFolding extends FoldingBuilderEx {
 		if (!(root instanceof PsiFile))
 			return FoldingDescriptor.EMPTY_ARRAY;
 
-		List<FoldingDescriptor> descriptors = new ArrayList<>();
-
-		root.accept(new PsiRecursiveElementWalkingVisitor() {
-			@Override
-			public void visitElement(@NotNull PsiElement element) {
-				if (element instanceof XmlAttribute attribute && "className".equals(attribute.getName()))
-					descriptors.add(new FoldingDescriptor(element.getNode(), element.getTextRange(), TAILWIND_GROUP));
-				super.visitElement(element);
-			}
-		});
-
-		return descriptors.toArray(new FoldingDescriptor[0]);
+		return SyntaxTraverser.psiTraverser(root)
+			 .filter(XmlAttribute.class)
+			 .filter(attribute -> "className".equals(attribute.getName()))
+			 .map(attribute -> new FoldingDescriptor(attribute.getNode(), attribute.getTextRange(), TAILWIND_GROUP))
+			 .toList()
+			 .toArray(new FoldingDescriptor[0]);
 	}
 
 	@Override
