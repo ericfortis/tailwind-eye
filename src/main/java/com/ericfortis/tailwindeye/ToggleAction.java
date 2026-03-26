@@ -28,22 +28,6 @@ public class ToggleAction extends AnAction {
 	}
 
 	@Override
-	public void update(@NotNull AnActionEvent e) {
-		Project project = e.getProject();
-		if (project == null) {
-			e.getPresentation().setEnabled(false);
-			return;
-		}
-
-		CoreState.FadingMode mode = CoreState.getInstance(project).getFadingMode();
-		String text = switch (mode) {
-			case NON_STYLING -> "Switch to Folding (ClassName)";
-			case FOLD_CLASS_NAME -> "Switch to Fading (Non-Styling)";
-		};
-		e.getPresentation().setText(text);
-	}
-
-	@Override
 	public @NotNull ActionUpdateThread getActionUpdateThread() {
 		return ActionUpdateThread.BGT;
 	}
