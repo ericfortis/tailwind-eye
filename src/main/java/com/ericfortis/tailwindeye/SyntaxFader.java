@@ -18,7 +18,10 @@ import java.util.List;
 public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 
 	private static final TextAttributesKey FADED_TEXT = TextAttributesKey.createTextAttributesKey(
-		 "TAILWIND_EYE_TEXT"
+		 "TAILWIND_EYE_FAINT"
+	);
+	private static final TextAttributesKey CLASSNAMES_TEXT = TextAttributesKey.createTextAttributesKey(
+		 "TAILWIND_EYE_CLASSNAMES"
 	);
 
 	@Override
@@ -35,7 +38,7 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 			@Override
 			public void visitElement(@NotNull PsiElement element) {
 				if (element instanceof XmlTag tag)
-					visitTag(tag, keepRanges);
+					visitTag(tag, keepRanges, holder);
 				super.visitElement(element);
 			}
 		});
@@ -43,33 +46,42 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 		String text = psiFile.getText();
 		if (keepRanges.isEmpty()) {
 			if (!text.isEmpty())
-				annotateFaded(0, text.length(), holder);
+				annotateFaint(0, text.length(), holder);
 			return;
 		}
 
 		int lastEnd = 0;
 		for (TextRange range : keepRanges) {
 			if (range.getStartOffset() > lastEnd)
-				annotateFaded(lastEnd, range.getStartOffset(), holder);
+				annotateFaint(lastEnd, range.getStartOffset(), holder);
 			lastEnd = Math.max(lastEnd, range.getEndOffset());
 		}
 
 		if (lastEnd < text.length())
-			annotateFaded(lastEnd, text.length(), holder);
+			annotateFaint(lastEnd, text.length(), holder);
 	}
 
-	private void visitTag(XmlTag tag, List<TextRange> keepRanges) {
+	private void visitTag(XmlTag tag, List<TextRange> keepRanges, AnnotationHolder holder) {
 		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
 		XmlAttribute attribute = tag.getAttribute("className");
 		if (attribute != null) {
 			XmlAttributeValue value = attribute.getValueElement();
-			if (value != null)
+			if (value != null) {
 				keepRanges.add(value.getValueTextRange());
+				annotateClassName(keepRanges.getLast(), holder);
+			}
 		}
 	}
 
-	private void annotateFaded(int start, int end, AnnotationHolder holder) {
+	private void annotateClassName(TextRange range, AnnotationHolder holder) {
+		holder.newAnnotation(HighlightSeverity.TEXT_ATTRIBUTES, "")
+			 .range(range)
+			 .textAttributes(CLASSNAMES_TEXT)
+			 .create();
+	}
+
+	private void annotateFaint(int start, int end, AnnotationHolder holder) {
 		if (start < end)
 			holder.newAnnotation(HighlightSeverity.TEXT_ATTRIBUTES, "")
 				 .range(new TextRange(start, end))

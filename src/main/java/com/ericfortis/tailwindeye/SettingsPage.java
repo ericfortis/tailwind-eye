@@ -17,7 +17,7 @@ import static com.intellij.lang.Language.ANY;
 
 public class SettingsPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-		 new AttributesDescriptor("Faded text", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_TEXT"))
+		 new AttributesDescriptor("Faded text", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT"))
 	};
 
 	@Override
@@ -44,7 +44,7 @@ public class SettingsPage implements ColorSettingsPage {
 
 	@Override
 	public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-		return Map.of("faded", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_TEXT"));
+		return Map.of("faded", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT"));
 	}
 
 	@Override
