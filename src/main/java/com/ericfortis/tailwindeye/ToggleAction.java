@@ -17,7 +17,7 @@ public class ToggleAction extends AnAction {
 		Project project = e.getProject();
 		if (project == null) return;
 
-		CoreState.FadingMode nextMode = CoreState.getInstance(project).toggleFadingMode();
+		CoreState.FadingMode nextMode = CoreState.getInstance(project).toggle();
 		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
 
 		FoldingModelEx foldingModel = (FoldingModelEx) editor.getFoldingModel();

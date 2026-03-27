@@ -40,7 +40,7 @@ public final class CoreState implements PersistentStateComponent<CoreState> {
 		return fadingMode == FadingMode.NON_STYLING;
 	}
 
-	public FadingMode toggleFadingMode() {
+	public FadingMode toggle() {
 		fadingMode = fadingMode.next();
 		return fadingMode;
 	}
