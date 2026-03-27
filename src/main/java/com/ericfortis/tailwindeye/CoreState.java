@@ -20,7 +20,7 @@ public final class CoreState implements PersistentStateComponent<CoreState> {
 		}
 	}
 
-	public FadingMode fadingMode = FadingMode.FOLD_CLASS_NAME;
+	private FadingMode mode = FadingMode.FOLD_CLASS_NAME;
 
 	public static CoreState getInstance(@NotNull Project project) {
 		return project.getService(CoreState.class);
@@ -37,11 +37,11 @@ public final class CoreState implements PersistentStateComponent<CoreState> {
 	}
 
 	public boolean isFading() {
-		return fadingMode == FadingMode.NON_STYLING;
+		return mode == FadingMode.NON_STYLING;
 	}
 
 	public FadingMode toggle() {
-		fadingMode = fadingMode.next();
-		return fadingMode;
+		mode = mode.next();
+		return mode;
 	}
 }
