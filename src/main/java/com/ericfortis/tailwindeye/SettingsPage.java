@@ -17,7 +17,8 @@ import static com.intellij.lang.Language.ANY;
 
 public class SettingsPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-		 new AttributesDescriptor("Faded text", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT"))
+		 new AttributesDescriptor("Faint text", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT")),
+		 new AttributesDescriptor("Class value", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_CLASSNAMES")),
 	};
 
 	@Override
@@ -33,13 +34,13 @@ public class SettingsPage implements ColorSettingsPage {
 	@Override
 	public @NotNull String getDemoText() {
 		return """
-			 <faded>function Example() {
-			   return (</faded>
-			     <div <faded>className="</faded>bg-blue-500 p-4 text-white font-bold<faded>">
+			 <faint>function Example() {
+			   return (
+			     <</faint>div <faint>className="</faint><tw>bg-blue-500 p-4 text-white font-bold</tw><faint>">
 			       Hello World
 			     </div>
 			   );
-			 }</faded>""";
+			 }</faint>""";
 	}
 
 	@Override
