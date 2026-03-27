@@ -21,10 +21,10 @@ public class ToggleAction extends AnAction {
 		CoreState.FadingMode nextMode = CoreState.getInstance(project).toggle();
 		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
 
-		FoldingModelEx foldingModel = (FoldingModelEx) editor.getFoldingModel();
-		foldingModel.runBatchFoldingOperation(() -> {
-			for (FoldRegion region : foldingModel.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
-				region.setExpanded(shouldExpand);
+		FoldingModelEx fm = (FoldingModelEx) editor.getFoldingModel();
+		fm.runBatchFoldingOperation(() -> {
+			for (FoldRegion r : fm.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
+				r.setExpanded(shouldExpand);
 		});
 	}
 }

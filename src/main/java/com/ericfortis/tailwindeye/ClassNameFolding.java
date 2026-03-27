@@ -23,8 +23,8 @@ public class ClassNameFolding extends FoldingBuilderEx {
 
 		return SyntaxTraverser.psiTraverser(root)
 			 .filter(XmlAttribute.class)
-			 .filter(attribute -> "className".equals(attribute.getName()))
-			 .map(attribute -> new FoldingDescriptor(attribute.getNode(), attribute.getTextRange(), TAILWIND_GROUP))
+			 .filter(attr -> "className".equals(attr.getName()))
+			 .map(attr -> new FoldingDescriptor(attr.getNode(), attr.getTextRange(), TAILWIND_GROUP))
 			 .toList()
 			 .toArray(new FoldingDescriptor[0]);
 	}
