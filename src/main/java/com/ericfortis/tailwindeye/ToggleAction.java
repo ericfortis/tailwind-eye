@@ -22,7 +22,7 @@ public class ToggleAction extends AnAction {
 		CoreState.FadingMode nextMode = CoreState.getInstance(project).toggle();
 		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
 
-		DaemonCodeAnalyzer.getInstance(project).restart();
+		DaemonCodeAnalyzer.getInstance(project).restart("tailwind eye toggled");
 
 		FoldingModelEx fm = (FoldingModelEx) editor.getFoldingModel();
 		fm.runBatchFoldingOperation(() -> {
