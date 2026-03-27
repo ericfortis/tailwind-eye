@@ -35,7 +35,7 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 			@Override
 			public void visitElement(@NotNull PsiElement element) {
 				if (element instanceof XmlTag tag)
-					processTag(tag, keepRanges);
+					visitTag(tag, keepRanges);
 				super.visitElement(element);
 			}
 		});
@@ -58,7 +58,7 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 			annotateFaded(lastEnd, text.length(), holder);
 	}
 
-	private void processTag(XmlTag tag, List<TextRange> keepRanges) {
+	private void visitTag(XmlTag tag, List<TextRange> keepRanges) {
 		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
 		XmlAttribute attribute = tag.getAttribute("className");
