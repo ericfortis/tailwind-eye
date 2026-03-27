@@ -6,7 +6,6 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Service(Service.Level.PROJECT)
 @com.intellij.openapi.components.State(name = "State", storages = @Storage("tailwindEye.xml"))
@@ -37,8 +36,8 @@ public final class CoreState implements PersistentStateComponent<CoreState> {
 		XmlSerializerUtil.copyBean(state, this);
 	}
 
-	public FadingMode getFadingMode() {
-		return fadingMode;
+	public boolean isFading() {
+		return fadingMode == FadingMode.NON_STYLING;
 	}
 
 	public FadingMode toggleFadingMode() {

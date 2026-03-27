@@ -27,7 +27,7 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 		if (!(root instanceof PsiFile psiFile))
 			return;
 
-		if (CoreState.getInstance(psiFile.getProject()).getFadingMode() != CoreState.FadingMode.NON_STYLING)
+		if (!CoreState.getInstance(psiFile.getProject()).isFading())
 			return;
 
 		List<TextRange> keepRanges = new ArrayList<>();
