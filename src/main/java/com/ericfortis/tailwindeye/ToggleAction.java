@@ -1,5 +1,6 @@
 package com.ericfortis.tailwindeye;
 
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -17,6 +18,8 @@ public class ToggleAction extends AnAction {
 
 		Project project = e.getProject();
 		if (project == null) return;
+
+		DaemonCodeAnalyzer.getInstance(project).restart();
 
 		CoreState.FadingMode nextMode = CoreState.getInstance(project).toggle();
 		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
