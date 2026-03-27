@@ -46,8 +46,8 @@ public class SettingsPage implements ColorSettingsPage {
 	@Override
 	public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
 		return Map.of(
-			"faint", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT"),
-			"tw", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_CLASSNAMES")
+			 "faint", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT"),
+			 "tw", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_CLASSNAMES")
 		);
 	}
 

@@ -80,7 +80,7 @@ public class PopoverEditor extends AnAction {
 
 					WriteCommandAction.runWriteCommandAction(project, "Sync Tailwind Classes", null, () ->
 						 editor.getDocument().replaceString(rangeMarker.getStartOffset(), rangeMarker.getEndOffset(), newText));
-					
+
 					updatePopupSize(popup, editorTextField);
 				} finally {
 					isUpdating = false;
@@ -92,7 +92,8 @@ public class PopoverEditor extends AnAction {
 		updatePopupSize(popup, editorTextField);
 	}
 
-	private record PopupContentResult(String content, int caretOffset) {}
+	private record PopupContentResult(String content, int caretOffset) {
+	}
 
 	private PopupContentResult computePopupContent(String originalContent, int relativeCaretOffset) {
 		StringBuilder popupContentBuilder = new StringBuilder();
