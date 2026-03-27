@@ -1,8 +1,11 @@
 package com.ericfortis.tailwindeye;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.fileTypes.SyntaxHighlighter;
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
+import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.intellij.openapi.util.NlsContexts;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +13,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Map;
 
-public class SettingsPage implements com.intellij.openapi.options.colors.ColorSettingsPage {
+import static com.intellij.lang.Language.ANY;
+
+public class SettingsPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
 		 new AttributesDescriptor("Faded text", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_TEXT"))
 	};
@@ -21,15 +26,15 @@ public class SettingsPage implements com.intellij.openapi.options.colors.ColorSe
 	}
 
 	@Override
-	public @NotNull com.intellij.openapi.fileTypes.SyntaxHighlighter getHighlighter() {
-		return com.intellij.openapi.fileTypes.SyntaxHighlighterFactory.getSyntaxHighlighter(com.intellij.lang.Language.ANY, null, null);
+	public @NotNull SyntaxHighlighter getHighlighter() {
+		return SyntaxHighlighterFactory.getSyntaxHighlighter(ANY, null, null);
 	}
 
 	@Override
 	public @NotNull String getDemoText() {
 		return """
 			 <faded>function Example() {
-			      return (</faded>
+			   return (</faded>
 			     <div <faded>className="</faded>bg-blue-500 p-4 text-white font-bold<faded>">
 			       Hello World
 			     </div>

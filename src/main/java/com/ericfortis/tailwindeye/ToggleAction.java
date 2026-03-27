@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.FoldRegion;
 import com.intellij.openapi.editor.ex.FoldingModelEx;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ public class ToggleAction extends AnAction {
 
 		FoldingModelEx foldingModel = (FoldingModelEx) editor.getFoldingModel();
 		foldingModel.runBatchFoldingOperation(() -> {
-			for (com.intellij.openapi.editor.FoldRegion region : foldingModel.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
+			for (FoldRegion region : foldingModel.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
 				region.setExpanded(shouldExpand);
 		});
 	}
