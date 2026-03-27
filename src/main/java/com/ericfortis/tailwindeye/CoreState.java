@@ -4,12 +4,13 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Service(Service.Level.PROJECT)
 @com.intellij.openapi.components.State(name = "State", storages = @Storage("tailwindEye.xml"))
-public final class CoreState implements PersistentStateComponent<CoreState.InnerState> {
+public final class CoreState implements PersistentStateComponent<CoreState> {
 
 	public enum FadingMode {
 		NON_STYLING,
@@ -20,36 +21,28 @@ public final class CoreState implements PersistentStateComponent<CoreState.Inner
 		}
 	}
 
-	public static final class InnerState {
-		public FadingMode fadingMode = FadingMode.FOLD_CLASS_NAME;
-	}
-
-	private InnerState state = new InnerState();
+	public FadingMode fadingMode = FadingMode.FOLD_CLASS_NAME;
 
 	public static CoreState getInstance(@NotNull Project project) {
 		return project.getService(CoreState.class);
 	}
 
 	@Override
-	public @Nullable InnerState getState() {
-		return state;
+	public CoreState getState() {
+		return this;
 	}
 
 	@Override
-	public void loadState(@NotNull InnerState state) {
-		this.state = state;
+	public void loadState(@NotNull CoreState state) {
+		XmlSerializerUtil.copyBean(state, this);
 	}
 
 	public FadingMode getFadingMode() {
-		return state.fadingMode;
+		return fadingMode;
 	}
 
 	public FadingMode toggleFadingMode() {
-		state.fadingMode = state.fadingMode.next();
-		return state.fadingMode;
-	}
-
-	public void setFadingMode(FadingMode mode) {
-		state.fadingMode = mode;
+		fadingMode = fadingMode.next();
+		return fadingMode;
 	}
 }

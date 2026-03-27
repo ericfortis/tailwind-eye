@@ -44,12 +44,17 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 			 "<tag className=\"\">Hello</tag>");
 
 		ClassNameFolding builder = new ClassNameFolding();
-		FoldingDescriptor[] descriptors = builder.buildFoldRegions(
-			 myFixture.getFile(),
-			 myFixture.getEditor().getDocument(),
-			 false
-		);
-		assertEquals("Should have folding descriptor for empty className quotes in XML", 1, descriptors.length);
-		assertEquals("…", builder.getPlaceholderText(descriptors[0].getElement()));
+		try {
+			FoldingDescriptor[] descriptors = builder.buildFoldRegions(
+				 myFixture.getFile(),
+				 myFixture.getEditor().getDocument(),
+				 false
+			);
+			assertEquals("Should have folding descriptor for empty className quotes in XML", 1, descriptors.length);
+			assertEquals("…", builder.getPlaceholderText(descriptors[0].getElement()));
+		} catch (Throwable e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 }
