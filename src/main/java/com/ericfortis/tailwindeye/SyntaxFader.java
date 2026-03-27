@@ -13,7 +13,6 @@ import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
@@ -48,27 +47,8 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator {
 			return;
 		}
 
-		// Sort keepRanges by start offset
-		keepRanges.sort(Comparator.comparingInt(TextRange::getStartOffset));
-
-		// Merge overlapping or adjacent ranges
-		List<TextRange> mergedRanges = new ArrayList<>();
-		if (!keepRanges.isEmpty()) {
-			TextRange current = keepRanges.getFirst();
-			for (int i = 1; i < keepRanges.size(); i++) {
-				TextRange next = keepRanges.get(i);
-				if (next.getStartOffset() <= current.getEndOffset())
-					current = current.union(next);
-				else {
-					mergedRanges.add(current);
-					current = next;
-				}
-			}
-			mergedRanges.add(current);
-		}
-
 		int lastEnd = 0;
-		for (TextRange range : mergedRanges) {
+		for (TextRange range : keepRanges) {
 			if (range.getStartOffset() > lastEnd)
 				annotateFaded(lastEnd, range.getStartOffset(), holder);
 			lastEnd = Math.max(lastEnd, range.getEndOffset());
