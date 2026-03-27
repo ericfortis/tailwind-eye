@@ -7,12 +7,9 @@ To reduce visual noise and focus on what matters, whether it's the structure of 
 itself.
 
 <!-- Plugin description -->
-Tailwind Eye
-
-## Usage
-- Use the shortcut `Shift + Alt + F` to toggle between the two modes:
-  - **Fade non-styling code**: Fades everything except `className` attributes.
-  - **Fold className content**: Folds the actual Tailwind utility strings.
+Use the shortcut `Shift + Alt + F` to toggle between the two modes:
+- **Fade non-styling code**: Fades everything except `className` attributes.
+- **Fold className content**: Folds the actual Tailwind utility strings.
 
 <!-- Plugin description end -->
 
