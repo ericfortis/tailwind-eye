@@ -31,27 +31,24 @@ public class ExpandClassNameActionTest extends BasePlatformTestCase {
             "`}></div>");
     }
 
-    /* Skip these tests for now because they require complex PSI matching that is better done manually or with full environment
-    public void testExpandClassNameAlreadyInBraces() {
-        myFixture.configureByText("test.html",
-            "<div className={\"p-4 <caret>m-2\"}></div>");
+    public void testInlineClassName() {
+        myFixture.configureByText("test.js",
+            "const a = <div className={`\n" +
+            "last-part\n" +
+            "flex\n" +
+            "flex-col\n" +
+            "gap-y-3\n" +
+            "<caret>`}></div>");
         ExpandClassNameAction action = new ExpandClassNameAction();
         myFixture.testAction(action);
-        myFixture.checkResult("<div className={`\n" +
-            "p-4\n" +
-            "m-2\n" +
-            "`}></div>");
+        myFixture.checkResult("const a = <div className=\"last-part flex flex-col gap-y-3\"></div>");
     }
 
-    public void testExpandClassNameAlreadyInTemplateLiteral() {
-        myFixture.configureByText("test.html",
-            "<div className={`p-4 <caret>m-2`}></div>");
+    public void testInlineClassNameSingleLine() {
+        myFixture.configureByText("test.js",
+            "const a = <div className={`p-4 <caret>m-2`}></div>");
         ExpandClassNameAction action = new ExpandClassNameAction();
         myFixture.testAction(action);
-        myFixture.checkResult("<div className={`\n" +
-            "p-4\n" +
-            "m-2\n" +
-            "`}></div>");
+        myFixture.checkResult("const a = <div className=\"p-4 m-2\"></div>");
     }
-    */
 }
