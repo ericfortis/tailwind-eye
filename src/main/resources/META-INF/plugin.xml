@@ -22,9 +22,9 @@
       <add-to-group group-id="ViewMenu" anchor="after" relative-to-action="TailwindEye.Toggle"/>
     </action>
     <action id="TailwindEye.EditString"
-            class="com.ericfortis.tailwindeye.PopoverEditor"
-            text="Edit Tailwind Classes"
-            description="Edit Tailwind classes in a floating editor">
+            class="com.ericfortis.tailwindeye.ExpandClassNameAction"
+            text="Expand ClassName"
+            description="Convert className string to multiline template literal">
       <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
     </action>
   </actions>
