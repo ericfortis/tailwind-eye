@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -134,13 +135,12 @@ public class PopoverEditor extends AnAction {
 	}
 
 	private static @NotNull EditorTextField getEditorTextField(String popupContent, Project project, int popupCaretOffset) {
-		EditorTextField editorTextField = new EditorTextField(popupContent, project, FileTypeManager.getInstance().getStdFileType("HTML"));
+		FileType cssFileType = FileTypeManager.getInstance().getFileTypeByExtension("css");
+		EditorTextField editorTextField = new EditorTextField(popupContent, project, cssFileType);
 		editorTextField.setOneLineMode(false);
-		editorTextField.setPreferredSize(new Dimension(400, 300));
+		editorTextField.setPreferredSize(new Dimension(240, 300));
 
 		editorTextField.addSettingsProvider(editorEx -> {
-			editorEx.getSettings().setFoldingOutlineShown(false);
-			editorEx.getSettings().setLineNumbersShown(false);
 			editorEx.getCaretModel().moveToOffset(Math.min(popupCaretOffset, editorEx.getDocument().getTextLength()));
 		});
 		return editorTextField;
