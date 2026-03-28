@@ -61,7 +61,7 @@ public class ExpandClassNameAction extends AnAction {
 			String content = trimmedRaw.substring(1, trimmedRaw.length() - 1).trim();
 			if (content.startsWith("`") && content.endsWith("`")) {
 				content = content.substring(1, content.length() - 1).trim();
-				
+
 				if (content.isBlank()) return;
 
 				String[] classes = content.split("\\s+");
