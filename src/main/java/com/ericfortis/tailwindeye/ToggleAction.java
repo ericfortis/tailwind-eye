@@ -27,6 +27,8 @@ public class ToggleAction extends AnAction {
 		VirtualFile vFile = psiFile.getVirtualFile();
 		if (vFile == null) return;
 
+		if ("js".equals(vFile.getExtension())) return; // because we can't register the plugin exclusively for JSX
+
 		CoreState coreState = CoreState.getInstance(project);
 		CoreState.FadingMode currentMode = vFile.getUserData(CoreState.FADING_MODE_KEY);
 		if (currentMode == null) {
