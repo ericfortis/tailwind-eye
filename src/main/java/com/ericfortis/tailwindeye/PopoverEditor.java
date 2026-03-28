@@ -1,11 +1,13 @@
 package com.ericfortis.tailwindeye;
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileTypes.FileType;
@@ -14,8 +16,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.xml.XmlAttribute;
 import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.ui.EditorTextField;
@@ -136,7 +140,26 @@ public class PopoverEditor extends AnAction {
 
 	private static @NotNull EditorTextField getEditorTextField(String popupContent, Project project, int popupCaretOffset) {
 		FileType cssFileType = FileTypeManager.getInstance().getFileTypeByExtension("css");
-		EditorTextField editorTextField = new EditorTextField(popupContent, project, cssFileType);
+		Language cssLanguage = Language.findLanguageByID("CSS");
+
+		Document document;
+		if (cssLanguage != null) {
+			PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("temp.css", cssLanguage, popupContent);
+			document = PsiDocumentManager.getInstance(project).getDocument(psiFile);
+			if (document != null) {
+				EditorTextField editorTextField = new EditorTextField(document, project, cssFileType, false, false);
+				editorTextField.setOneLineMode(false);
+				editorTextField.setPreferredSize(new Dimension(240, 300));
+				editorTextField.addSettingsProvider(editorEx -> {
+					editorEx.getCaretModel().moveToOffset(Math.min(popupCaretOffset, editorEx.getDocument().getTextLength()));
+				});
+				return editorTextField;
+			}
+		}
+
+		// Fallback
+		document = EditorFactory.getInstance().createDocument(popupContent);
+		EditorTextField editorTextField = new EditorTextField(document, project, cssFileType, false, false);
 		editorTextField.setOneLineMode(false);
 		editorTextField.setPreferredSize(new Dimension(240, 300));
 
