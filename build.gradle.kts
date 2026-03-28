@@ -34,8 +34,8 @@ dependencies {
 
 	// https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
 	intellijPlatform {
-    // intellijIdea(providers.gradleProperty("platformVersion"))
-		webstorm(providers.gradleProperty("platformVersion"))
+     intellijIdea(providers.gradleProperty("platformVersion"))
+//		webstorm(providers.gradleProperty("platformVersion"))
 
 		bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
 		plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
