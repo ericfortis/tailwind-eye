@@ -11,14 +11,14 @@
     <action id="TailwindEye.Toggle"
             class="com.ericfortis.tailwindeye.ToggleAction"
             text="Toggle Tailwind Eye"
-            description="Enable/Disable fading for non-styling code">
+            description="Either Folds classNames or Fades non-classNames">
       <add-to-group group-id="ViewMenu" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
     </action>
     <action id="TailwindEye.EditString"
             class="com.ericfortis.tailwindeye.PopoverEditor"
             text="Edit Tailwind Classes"
-            description="Edit tailwind classes in a floating editor">
+            description="Edit Tailwind classes in a floating editor">
       <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
     </action>
   </actions>
