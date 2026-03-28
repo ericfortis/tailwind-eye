@@ -15,6 +15,12 @@
       <add-to-group group-id="ViewMenu" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
     </action>
+    <action id="TailwindEye.TurnOff"
+            class="com.ericfortis.tailwindeye.TurnOffAction"
+            text="Turn Off Tailwind Eye"
+            description="Turns off all Tailwind Eye effects">
+      <add-to-group group-id="ViewMenu" anchor="after" relative-to-action="TailwindEye.Toggle"/>
+    </action>
     <action id="TailwindEye.EditString"
             class="com.ericfortis.tailwindeye.PopoverEditor"
             text="Edit Tailwind Classes"
