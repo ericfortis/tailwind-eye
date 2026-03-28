@@ -18,9 +18,6 @@ public class ClassNameFolding extends FoldingBuilderEx {
 
 	@Override
 	public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
-		if (!(root instanceof PsiFile))
-			return FoldingDescriptor.EMPTY_ARRAY;
-
 		return SyntaxTraverser.psiTraverser(root)
 			 .filter(XmlAttribute.class)
 			 .filter(attr -> "className".equals(attr.getName()))
