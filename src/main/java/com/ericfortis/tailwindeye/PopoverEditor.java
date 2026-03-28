@@ -15,6 +15,8 @@ import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.JBPopupListener;
+import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
@@ -71,27 +73,28 @@ public class PopoverEditor extends AnAction {
 
 		Document tempDocument = editorTextField.getDocument();
 		tempDocument.addDocumentListener(new DocumentListener() {
-			private boolean isUpdating = false;
-
 			@Override
 			public void documentChanged(@NotNull DocumentEvent event) {
-				if (isUpdating || !rangeMarker.isValid()) return;
-				isUpdating = true;
-				try {
-					String newText = Arrays.stream(tempDocument.getText().split("\n"))
-						 .map(String::trim)
-						 .filter(s -> !s.isEmpty())
-						 .collect(Collectors.joining(" "));
-
-					WriteCommandAction.runWriteCommandAction(project, "Sync Tailwind Classes", null, () ->
-						 editor.getDocument().replaceString(rangeMarker.getStartOffset(), rangeMarker.getEndOffset(), newText));
-
-					updatePopupSize(popup, editorTextField);
-				} finally {
-					isUpdating = false;
-				}
+				updatePopupSize(popup, editorTextField);
 			}
 		}, popup);
+
+		popup.addListener(new JBPopupListener() {
+			@Override
+			public void onClosed(@NotNull LightweightWindowEvent event) {
+				if (!rangeMarker.isValid()) return;
+
+				String newText = Arrays.stream(tempDocument.getText().split("\n"))
+					 .map(String::trim)
+					 .filter(s -> !s.isEmpty())
+					 .collect(Collectors.joining(" "));
+
+				if (newText.equals(originalContent)) return;
+
+				WriteCommandAction.runWriteCommandAction(project, "Sync Tailwind Classes", null, () ->
+					 editor.getDocument().replaceString(rangeMarker.getStartOffset(), rangeMarker.getEndOffset(), newText));
+			}
+		});
 
 		popup.showInBestPositionFor(editor);
 		updatePopupSize(popup, editorTextField);
