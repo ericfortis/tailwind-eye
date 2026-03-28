@@ -81,10 +81,8 @@ public class ExpandClassNameAction extends AnAction {
 		while (current != null && !(current instanceof PsiFile)) {
 			if (current instanceof XmlAttributeValue value) {
 				PsiElement parent = value.getParent();
-				if (parent instanceof XmlAttribute attribute) {
-					if ("className".equals(attribute.getName()))
-						return value;
-				}
+				if (parent instanceof XmlAttribute attribute && "className".equals(attribute.getName()))
+					return value;
 			}
 			current = current.getParent();
 		}
