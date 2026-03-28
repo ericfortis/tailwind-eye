@@ -30,13 +30,12 @@ public class ExpandClassNameAction extends AnAction {
 		PsiElement element = psiFile.findElementAt(offset);
 		if (element == null) return;
 
-		// Use PSI to find the closest attribute value
-		XmlAttributeValue attributeValue = findAttributeValue(element);
-		if (attributeValue == null) return;
+		XmlAttributeValue cnameVal = findClosestClassNameAttr(element);
+		if (cnameVal == null) return;
 
 		// Get the range of the attribute value including quotes
-		TextRange rangeToUse = attributeValue.getTextRange();
-		String rawTextToUse = attributeValue.getText();
+		TextRange rangeToUse = cnameVal.getTextRange();
+		String rawTextToUse = cnameVal.getText();
 
 		// Handle expansion (from double quotes to multiline)
 		if (rawTextToUse.startsWith("\"") && rawTextToUse.endsWith("\"")) {
@@ -77,7 +76,7 @@ public class ExpandClassNameAction extends AnAction {
 		}
 	}
 
-	private XmlAttributeValue findAttributeValue(PsiElement element) {
+	private XmlAttributeValue findClosestClassNameAttr(PsiElement element) {
 		PsiElement current = element;
 		while (current != null && !(current instanceof PsiFile)) {
 			if (current instanceof XmlAttributeValue value) {
