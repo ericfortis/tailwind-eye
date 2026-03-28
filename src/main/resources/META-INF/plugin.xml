@@ -5,6 +5,7 @@
   <vendor>ericfortis</vendor>
 
   <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.javascript</depends>
 
   <actions>
     <action id="TailwindEye.Toggle"
@@ -23,10 +24,12 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.foldingBuilder language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.ClassNameFolding"/>
+    <lang.foldingBuilder language="HTML" implementationClass="com.ericfortis.tailwindeye.ClassNameFolding"/>
+    <lang.foldingBuilder language="ECMAScript 6" implementationClass="com.ericfortis.tailwindeye.ClassNameFolding"/>
     <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.ClassNameFolding"/>
 
-    <annotator language="JSX Harmony" implementationClass="com.ericfortis.tailwindeye.SyntaxFader"/>
+    <annotator language="ECMAScript 6" implementationClass="com.ericfortis.tailwindeye.SyntaxFader"/>
+    <annotator language="HTML" implementationClass="com.ericfortis.tailwindeye.SyntaxFader"/>
     <annotator language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.SyntaxFader"/>
 
     <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>

@@ -5,7 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 public class FoldingBuilderTest extends BasePlatformTestCase {
 	public void testFoldingRegions() {
-		myFixture.configureByText("test.xml",
+		myFixture.configureByText("test.html",
 			 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
 
 		ClassNameFolding builder = new ClassNameFolding();
@@ -26,7 +26,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 
 
 	public void testNoFoldingForOtherAttributes() {
-		myFixture.configureByText("test.xml",
+		myFixture.configureByText("test.html",
 			 "<tag id=\"main\" title=\"Home\">Hello</tag>");
 
 		ClassNameFolding builder = new ClassNameFolding();
@@ -40,7 +40,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 
 
 	public void testFoldingForEmptyClassNameIncludesQuotes() {
-		myFixture.configureByText("test.xml",
+		myFixture.configureByText("test.html",
 			 "<tag className=\"\">Hello</tag>");
 
 		ClassNameFolding builder = new ClassNameFolding();
