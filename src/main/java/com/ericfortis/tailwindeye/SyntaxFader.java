@@ -3,6 +3,7 @@ package com.ericfortis.tailwindeye;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiElement;
@@ -30,7 +31,17 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator, Dumb
 		if (!(root instanceof PsiFile psiFile))
 			return;
 
-		if (!CoreState.getInstance(psiFile.getProject()).isFading())
+		VirtualFile vFile = psiFile.getVirtualFile();
+		CoreState.FadingMode mode = null;
+		if (vFile != null) {
+			mode = vFile.getUserData(CoreState.FADING_MODE_KEY);
+		}
+
+		if (mode == null) {
+			mode = CoreState.getInstance(psiFile.getProject()).getMode();
+		}
+
+		if (mode != CoreState.FadingMode.NON_STYLING)
 			return;
 
 		List<TextRange> keepRanges = new ArrayList<>();
