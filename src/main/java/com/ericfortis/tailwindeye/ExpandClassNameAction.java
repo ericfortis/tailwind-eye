@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 
 public class ExpandClassNameAction extends AnAction {
 
+	private static final String MULTILINE_PREFIX = "{`";
+	private static final String MULTILINE_SUFFIX = "`}";
+
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		Project project = e.getProject();
@@ -29,68 +32,56 @@ public class ExpandClassNameAction extends AnAction {
 		PsiElement element = psiFile.findElementAt(offset);
 		if (element == null) return;
 
-		XmlAttributeValue attr = findClosestClassNameAttrValue(element);
+		XmlAttributeValue attr = findClassNameAttrValue(element);
 		if (attr == null) return;
 
-		TextRange range = attr.getTextRange();
 		String rawText = attr.getText();
+		String replacement = toggle(rawText);
+		if (replacement == null) return;
 
-		if (caretInMultiline(rawText)) {
-			String replacement = toInline(rawText);
-			if (replacement == null) return;
-			WriteCommandAction.runWriteCommandAction(project, "Inline ClassName", null, () ->
-				 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
-		} else if (caretInInline(rawText)) {
-			String replacement = toMultiline(rawText);
-			if (replacement == null) return;
-			WriteCommandAction.runWriteCommandAction(project, "Expand ClassName", null, () ->
-				 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
-		}
+		TextRange range = attr.getTextRange();
+		WriteCommandAction.runWriteCommandAction(project, "Toggle ClassName", null, () ->
+			 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
 	}
 
-	private XmlAttributeValue findClosestClassNameAttrValue(PsiElement element) {
-		PsiElement current = element;
-		while (current != null && !(current instanceof PsiFile)) {
-			if (current instanceof XmlAttributeValue value) {
-				PsiElement parent = value.getParent();
-				if (parent instanceof XmlAttribute attribute && "className".equals(attribute.getName()))
-					return value;
+	private static XmlAttributeValue findClassNameAttrValue(PsiElement element) {
+		for (PsiElement current = element; current != null && !(current instanceof PsiFile); current = current.getParent())
+			if (current instanceof XmlAttributeValue value
+				 && value.getParent() instanceof XmlAttribute attribute
+				 && "className".equals(attribute.getName())) {
+				return value;
 			}
-			current = current.getParent();
-		}
 		return null;
 	}
 
-	private boolean caretInMultiline(String text) {
-		return text.startsWith("{`") && text.endsWith("`}");
+	static String toggle(String text) {
+		if (text.startsWith(MULTILINE_PREFIX) && text.endsWith(MULTILINE_SUFFIX))
+			return toInline(text);
+		if (text.startsWith("\"") && text.endsWith("\""))
+			return toMultiline(text);
+		return null;
 	}
 
-	private boolean caretInInline(String text) {
-		return text.startsWith("\"") && text.endsWith("\"");
+	private static String toInline(String text) {
+		String content = text.substring(MULTILINE_PREFIX.length(), text.length() - MULTILINE_SUFFIX.length()).trim();
+		return content.isBlank()
+			 ? null
+			 : "\"" + normalizeSpaces(content) + "\"";
 	}
 
-	private String toInline(String text) {
-		String t = text.trim();
-		String content = t.substring(1, t.length() - 1).trim();
-		content = content.substring(1, content.length() - 1).trim();
-
+	private static String toMultiline(String text) {
+		String content = text.substring(1, text.length() - 1).trim();
 		if (content.isBlank()) return null;
-
-		String newContent = Arrays.stream(content.split("\\s+"))
-			 .filter(s -> !s.isEmpty())
-			 .collect(Collectors.joining(" "));
-
-		return "\"" + newContent + "\"";
+		return MULTILINE_PREFIX + "\n" + splitOnWhitespace(content) + "\n" + MULTILINE_SUFFIX;
 	}
 
-	private String toMultiline(String text) {
-		String content = text.substring(1, text.length() - 1);
-		if (content.isBlank()) return null;
+	private static String normalizeSpaces(String text) {
+		return splitOnWhitespace(text).replace("\n", " ");
+	}
 
-		String newContent = Arrays.stream(content.split("\\s+"))
+	private static String splitOnWhitespace(String text) {
+		return Arrays.stream(text.split("\\s+"))
 			 .filter(s -> !s.isEmpty())
 			 .collect(Collectors.joining("\n"));
-
-		return "{`\n" + newContent + "\n`}";
 	}
 }
