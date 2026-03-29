@@ -18,8 +18,8 @@ public class ActionTurnOff extends AnAction {
 		if (vFile == null) return;
 
 		ActionFoldOrFade.unfold(editor);
+		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye off"); 
 		
 		ActionFoldOrFade.unfade(vFile);
-		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye off"); // just for fade
 	}
 }
