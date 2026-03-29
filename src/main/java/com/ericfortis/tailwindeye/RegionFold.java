@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class RegionFold extends FoldingBuilderEx {
 
 	public static final FoldingGroup TAILWIND_GROUP = FoldingGroup.newGroup("TailwindEyeFoldingGroup");
+	public static final String PLACEHOLDER = "\uD83D\uDCA8…"; // wind emoji and ellipsis
 
 	@Override
 	public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
@@ -38,7 +39,7 @@ public class RegionFold extends FoldingBuilderEx {
 
 	@Override
 	public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
-		return "\uD83D\uDCA8…"; // wind emoji and ellipsis
+		return PLACEHOLDER; 
 	}
 
 	@Override
