@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.HighlighterLayer;
 import com.intellij.openapi.editor.markup.HighlighterTargetArea;
 import com.intellij.openapi.editor.markup.MarkupModel;
-import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.lang.Boolean.TRUE;
+
 
 public final class RegionFade {
 
@@ -31,14 +32,14 @@ public final class RegionFade {
 	}
 
 	public static void updateFade(@NotNull Editor editor, @Nullable PsiFile psiFile, boolean enabled) {
-		MarkupModel markupModel = editor.getMarkupModel();
+		var markupModel = editor.getMarkupModel();
 		clearTailwindFadeHighlighters(markupModel);
 
 		if (!enabled || psiFile == null)
 			return;
 
-		for (TextRange range : getFadeRanges(psiFile)) {
-			RangeHighlighter highlighter = markupModel.addRangeHighlighter(
+		for (var range : getFadeRanges(psiFile)) {
+			var highlighter = markupModel.addRangeHighlighter(
 				 range.getStartOffset(),
 				 range.getEndOffset(),
 				 HighlighterLayer.WARNING,
@@ -51,8 +52,8 @@ public final class RegionFade {
 	}
 
 	private static void clearTailwindFadeHighlighters(MarkupModel markupModel) {
-		for (RangeHighlighter highlighter : markupModel.getAllHighlighters())
-			if (Boolean.TRUE.equals(highlighter.getUserData(TAILWIND_EYE_FADE_MARKER)))
+		for (var highlighter : markupModel.getAllHighlighters())
+			if (TRUE.equals(highlighter.getUserData(TAILWIND_EYE_FADE_MARKER)))
 				markupModel.removeHighlighter(highlighter);
 	}
 
@@ -69,23 +70,23 @@ public final class RegionFade {
 		});
 
 		keepRanges.sort(Comparator.comparingInt(TextRange::getStartOffset));
-		int textLength = psiFile.getTextLength();
+		int len = psiFile.getTextLength();
 		List<TextRange> fadeRanges = new ArrayList<>();
 		if (keepRanges.isEmpty()) {
-			if (textLength > 0)
-				fadeRanges.add(new TextRange(0, textLength));
+			if (len > 0)
+				fadeRanges.add(new TextRange(0, len));
 			return fadeRanges;
 		}
 
 		int lastEnd = 0;
-		for (TextRange range : keepRanges) {
+		for (var range : keepRanges) {
 			if (range.getStartOffset() > lastEnd)
 				fadeRanges.add(new TextRange(lastEnd, range.getStartOffset()));
 			lastEnd = Math.max(lastEnd, range.getEndOffset());
 		}
 
-		if (lastEnd < textLength)
-			fadeRanges.add(new TextRange(lastEnd, textLength));
+		if (lastEnd < len)
+			fadeRanges.add(new TextRange(lastEnd, len));
 
 		return fadeRanges;
 	}
@@ -93,9 +94,9 @@ public final class RegionFade {
 	private static void visitTag(XmlTag tag, List<TextRange> keepRanges) {
 		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
-		var attribute = tag.getAttribute("className");
-		if (attribute != null) {
-			var value = attribute.getValueElement();
+		var attr = tag.getAttribute("className");
+		if (attr != null) {
+			var value = attr.getValueElement();
 			if (value != null)
 				keepRanges.add(value.getValueTextRange());
 		}
