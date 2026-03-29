@@ -1,4 +1,3 @@
-/*
 package com.ericfortis.tailwindeye;
 
 import com.intellij.ide.plugins.PluginManagerCore;
@@ -9,6 +8,11 @@ public class ExpandClassNameActionTest extends BasePlatformTestCase {
 	protected String getTestDataPath() {
 		return "src/test/testData";
 	}
+	
+	@Override
+	protected boolean isWriteActionRequired() {
+		return false;
+	}
 
 	@Override
 	protected void setUp() throws Exception {
@@ -18,17 +22,13 @@ public class ExpandClassNameActionTest extends BasePlatformTestCase {
 		);
 	}
 
-	@Override
-	protected boolean isWriteActionRequired() {
-		return false;
-	}
-
 	public void testJsxFileTypeResolution() {
 		myFixture.configureByText("test.jsx", "<div className=\"x\"></div>");
 		String fileTypeName = myFixture.getFile().getFileType().getName();
 		String languageId = myFixture.getFile().getLanguage().getID();
 		System.out.println("FileType: " + fileTypeName + ", Language: " + languageId);
-		// Just log — don't assert, since JSX resolution depends on plugin loading in test env
+		assertFalse("PLAIN_TEXT".equals(myFixture.getFile().getFileType().getName()));
+		assertFalse("TEXT".equals(myFixture.getFile().getLanguage().getID()));
 	}
 
 	public void testToMultiline() {
@@ -43,4 +43,3 @@ public class ExpandClassNameActionTest extends BasePlatformTestCase {
 		myFixture.checkResult("<div className=\"my-2 flex flex-col\"></div>");
 	}
 }
- */
