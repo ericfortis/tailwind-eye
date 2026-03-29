@@ -14,15 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO study large file annnotator, so perhaps we can speed up fading by not computing needless syntax
+// TODO study large file annotator, so perhaps we can speed up fading by not computing needless syntax
 
 public class RegionFade implements Annotator {
 
 	private static final TextAttributesKey FADED_TEXT = TextAttributesKey.createTextAttributesKey(
 		 "TAILWIND_EYE_FAINT"
-	);
-	private static final TextAttributesKey CLASSNAMES_TEXT = TextAttributesKey.createTextAttributesKey(
-		 "TAILWIND_EYE_CLASSNAMES"
 	);
 
 	@Override
@@ -47,7 +44,7 @@ public class RegionFade implements Annotator {
 			@Override
 			public void visitElement(@NotNull PsiElement element) {
 				if (element instanceof XmlTag tag)
-					visitTag(tag, keepRanges, holder);
+					visitTag(tag, keepRanges);
 				super.visitElement(element);
 			}
 		});
@@ -70,24 +67,15 @@ public class RegionFade implements Annotator {
 			annotateFaint(lastEnd, textLength, holder);
 	}
 
-	private void visitTag(XmlTag tag, List<TextRange> keepRanges, AnnotationHolder holder) {
+	private void visitTag(XmlTag tag, List<TextRange> keepRanges) {
 		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
 		var attribute = tag.getAttribute("className");
 		if (attribute != null) {
 			var value = attribute.getValueElement();
-			if (value != null) {
+			if (value != null) 
 				keepRanges.add(value.getValueTextRange());
-				annotateClassName(keepRanges.getLast(), holder);
-			}
 		}
-	}
-
-	private void annotateClassName(TextRange range, AnnotationHolder holder) {
-		holder.newAnnotation(HighlightSeverity.TEXT_ATTRIBUTES, "")
-			 .range(range)
-			 .textAttributes(CLASSNAMES_TEXT)
-			 .create();
 	}
 
 	private void annotateFaint(int start, int end, AnnotationHolder holder) {

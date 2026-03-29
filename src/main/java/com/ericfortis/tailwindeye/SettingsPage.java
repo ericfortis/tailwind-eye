@@ -18,7 +18,6 @@ import static com.intellij.lang.Language.ANY;
 public class SettingsPage implements ColorSettingsPage {
 	private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
 		 new AttributesDescriptor("Faint text", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT")),
-		 new AttributesDescriptor("Class value", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_CLASSNAMES")),
 	};
 
 	@Override
@@ -36,7 +35,7 @@ public class SettingsPage implements ColorSettingsPage {
 		return """
 			 <faint>function Example() {
 			   return (
-			     <</faint>div <faint>className="</faint><tw>bg-blue-500 p-4 text-white font-bold</tw><faint>">
+			     <</faint>div <faint>className="</faint>bg-blue-500 p-4 text-white font-bold<faint>">
 			       Hello World
 			     </div>
 			   );
@@ -46,8 +45,7 @@ public class SettingsPage implements ColorSettingsPage {
 	@Override
 	public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
 		return Map.of(
-			 "faint", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT"),
-			 "tw", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_CLASSNAMES")
+			 "faint", TextAttributesKey.createTextAttributesKey("TAILWIND_EYE_FAINT")
 		);
 	}
 
