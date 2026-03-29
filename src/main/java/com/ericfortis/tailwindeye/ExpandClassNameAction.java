@@ -23,29 +23,28 @@ public class ExpandClassNameAction extends AnAction {
 		Project project = e.getProject();
 		Editor editor = e.getData(CommonDataKeys.EDITOR);
 		PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
-
 		if (project == null || editor == null || psiFile == null) return;
 
 		int offset = editor.getCaretModel().getOffset();
 		PsiElement element = psiFile.findElementAt(offset);
 		if (element == null) return;
 
-		XmlAttributeValue cnameVal = findClosestClassNameAttr(element);
-		if (cnameVal == null) return;
+		XmlAttributeValue attr = findClosestClassNameAttrValue(element);
+		if (attr == null) return;
 
-		TextRange rangeToUse = cnameVal.getTextRange();
-		String rawText = cnameVal.getText();
+		TextRange range = attr.getTextRange();
+		String rawText = attr.getText();
 
 		if (isInMultiline(rawText)) {
 			String replacement = toInline(rawText);
 			if (replacement == null) return;
 			WriteCommandAction.runWriteCommandAction(project, "Inline ClassName", null, () ->
-				 editor.getDocument().replaceString(rangeToUse.getStartOffset(), rangeToUse.getEndOffset(), replacement));
+				 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
 		} else if (isInInline(rawText)) {
 			String replacement = toMultiline(rawText);
 			if (replacement == null) return;
 			WriteCommandAction.runWriteCommandAction(project, "Expand ClassName", null, () ->
-				 editor.getDocument().replaceString(rangeToUse.getStartOffset(), rangeToUse.getEndOffset(), replacement));
+				 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
 		}
 	}
 
@@ -92,7 +91,7 @@ public class ExpandClassNameAction extends AnAction {
 		return "{`\n" + newContent + "\n`}";
 	}
 
-	private XmlAttributeValue findClosestClassNameAttr(PsiElement element) {
+	private XmlAttributeValue findClosestClassNameAttrValue(PsiElement element) {
 		PsiElement current = element;
 		while (current != null && !(current instanceof PsiFile)) {
 			if (current instanceof XmlAttributeValue value) {
