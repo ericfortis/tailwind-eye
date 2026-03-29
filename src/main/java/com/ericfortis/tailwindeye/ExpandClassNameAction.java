@@ -18,9 +18,6 @@ import java.util.stream.Collectors;
 
 public class ExpandClassNameAction extends AnAction {
 
-	private static final String MULTILINE_PREFIX = "{`";
-	private static final String MULTILINE_SUFFIX = "`}";
-
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		Project project = e.getProject();
@@ -55,7 +52,7 @@ public class ExpandClassNameAction extends AnAction {
 	}
 
 	static String toggle(String text) {
-		if (text.startsWith(MULTILINE_PREFIX) && text.endsWith(MULTILINE_SUFFIX))
+		if (text.startsWith("{`") && text.endsWith("`}"))
 			return toInline(text);
 		if (text.startsWith("\"") && text.endsWith("\""))
 			return toMultiline(text);
@@ -63,7 +60,7 @@ public class ExpandClassNameAction extends AnAction {
 	}
 
 	private static String toInline(String text) {
-		String content = text.substring(MULTILINE_PREFIX.length(), text.length() - MULTILINE_SUFFIX.length()).trim();
+		String content = text.substring(2, text.length() - 2).trim();
 		return content.isBlank()
 			 ? null
 			 : "\"" + normalizeSpaces(content) + "\"";
@@ -73,7 +70,7 @@ public class ExpandClassNameAction extends AnAction {
 		String content = text.substring(1, text.length() - 1).trim();
 		return content.isBlank()
 			 ? null
-			 : MULTILINE_PREFIX + "\n" + splitOnWhitespace(content) + "\n" + MULTILINE_SUFFIX;
+			 : "{`\n" + splitOnWhitespace(content) + "\n`}";
 	}
 
 	private static String normalizeSpaces(String text) {
