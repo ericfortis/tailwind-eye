@@ -18,7 +18,7 @@
     <action id="TailwindEye.TurnOff"
             class="com.ericfortis.tailwindeye.ActionTurnOff"
             text="Turn Off Tailwind Eye"
-            description="Turns off all Tailwind Eye effects">
+            description="Turns off Fold and Fades">
       <add-to-group group-id="ViewMenu" anchor="after" relative-to-action="TailwindEye.Toggle"/>
     </action>
     <action id="TailwindEye.EditString"
