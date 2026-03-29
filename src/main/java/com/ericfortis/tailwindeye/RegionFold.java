@@ -12,6 +12,7 @@ import com.intellij.psi.xml.XmlAttribute;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/** Creates fold regions for classNames values */
 public class RegionFold extends FoldingBuilderEx {
 
 	public static final FoldingGroup TAILWIND_GROUP = FoldingGroup.newGroup("TailwindEyeFoldingGroup");
