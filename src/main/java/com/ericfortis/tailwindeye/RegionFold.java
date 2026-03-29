@@ -5,9 +5,11 @@ import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SyntaxTraverser;
 import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +22,17 @@ public class RegionFold extends FoldingBuilderEx {
 		return SyntaxTraverser.psiTraverser(root)
 			 .filter(XmlAttribute.class)
 			 .filter(attr -> "className".equals(attr.getName()))
-			 .map(attr -> new FoldingDescriptor(attr.getNode(), attr.getTextRange(), TAILWIND_GROUP))
+			 .filter(attr -> attr.getValueElement() != null)
+			 .filter(attr -> {
+				 String value = attr.getValue();
+				 return value != null && !value.isBlank();
+			 })
+			 .map(attr -> {
+				 XmlAttributeValue valueElement = attr.getValueElement();
+				 TextRange fullRange = valueElement.getTextRange();
+				 TextRange innerRange = new TextRange(fullRange.getStartOffset() + 1, fullRange.getEndOffset() - 1);
+				 return new FoldingDescriptor(attr.getNode(), innerRange, TAILWIND_GROUP);
+			 })
 			 .toList()
 			 .toArray(new FoldingDescriptor[0]);
 	}
