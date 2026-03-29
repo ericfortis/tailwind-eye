@@ -12,22 +12,22 @@ import org.jetbrains.annotations.NotNull;
 @com.intellij.openapi.components.State(name = "State", storages = @Storage("tailwindEye.xml"))
 public final class CoreState implements PersistentStateComponent<CoreState> {
 
-	public static final Key<FadingMode> FADING_MODE_KEY = Key.create("TAILWIND_EYE_FADING_MODE");
+	public static final Key<EyeMode> EYE_MODE_KEY = Key.create("TAILWIND_EYE_FADING_MODE");
 
-	public enum FadingMode {
+	public enum EyeMode {
 		OFF,
-		NON_STYLING,
-		FOLD_CLASS_NAME;
+		FADE,
+		FOLD;
 
-		public FadingMode next() {
-			if (this == OFF) return FOLD_CLASS_NAME;
-			return this == NON_STYLING ? FOLD_CLASS_NAME : NON_STYLING;
+		public EyeMode next() {
+			if (this == OFF) return FOLD;
+			return this == FADE ? FOLD : FADE;
 		}
 	}
 
-	private final FadingMode mode = FadingMode.FOLD_CLASS_NAME;
+	private final EyeMode mode = EyeMode.FOLD;
 
-	public FadingMode getMode() {
+	public EyeMode getMode() {
 		return mode;
 	}
 

@@ -30,14 +30,14 @@ public class RegionFade implements Annotator {
 //		holder.getCurrentAnnotationSession().putUserData();
 		
 		var vFile = psiFile.getVirtualFile();
-		CoreState.FadingMode mode = null;
+		CoreState.EyeMode mode = null;
 		if (vFile != null)
-			mode = vFile.getUserData(CoreState.FADING_MODE_KEY);
+			mode = vFile.getUserData(CoreState.EYE_MODE_KEY);
 
 		if (mode == null)
 			mode = CoreState.getInstance(psiFile.getProject()).getMode();
 
-		if (mode != CoreState.FadingMode.NON_STYLING)
+		if (mode != CoreState.EyeMode.FADE)
 			return;
 
 		List<TextRange> keepRanges = new ArrayList<>();

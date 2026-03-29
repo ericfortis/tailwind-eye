@@ -29,18 +29,18 @@ public class ActionFoldOrFade extends AnAction {
 		setFade(vFile, nextMode);
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye fade toggle");
 		
-		setFold(editor, nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
+		setFold(editor, nextMode != CoreState.EyeMode.FOLD);
 	}
 
-	private static CoreState.FadingMode getNextMode(Project project, VirtualFile vFile) {
-		var currentMode = vFile.getUserData(CoreState.FADING_MODE_KEY);
+	private static CoreState.EyeMode getNextMode(Project project, VirtualFile vFile) {
+		var currentMode = vFile.getUserData(CoreState.EYE_MODE_KEY);
 		if (currentMode == null)
 			currentMode = CoreState.getInstance(project).getMode();
 		return currentMode.next();
 	}
 
-	private static void setFade(VirtualFile vFile, CoreState.FadingMode nextMode) {
-		vFile.putUserData(CoreState.FADING_MODE_KEY, nextMode);
+	private static void setFade(VirtualFile vFile, CoreState.EyeMode nextMode) {
+		vFile.putUserData(CoreState.EYE_MODE_KEY, nextMode);
 	}
 
 	private static void setFold(Editor editor, boolean shouldExpand) {
@@ -52,7 +52,7 @@ public class ActionFoldOrFade extends AnAction {
 	}
 
 	public static void unfade(VirtualFile vFile) {
-		setFade(vFile, CoreState.FadingMode.OFF);
+		setFade(vFile, CoreState.EyeMode.OFF);
 	}
 
 	public static void unfold(Editor editor) {
