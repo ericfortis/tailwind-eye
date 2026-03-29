@@ -12,10 +12,12 @@ import com.intellij.psi.xml.XmlAttribute;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/** Creates fold regions for classNames values */
+/**
+ * Creates fold regions for classNames values
+ */
 public class RegionFold extends FoldingBuilderEx {
 
-	public static final FoldingGroup TAILWIND_GROUP = FoldingGroup.newGroup("TailwindEyeFoldingGroup");
+	public static final String TAILWIND_GROUP_NAME = "TailwindEyeFoldingGroup";
 	public static final String PLACEHOLDER = "\uD83D\uDCA8…"; // wind emoji and ellipsis
 
 	@Override
@@ -31,7 +33,10 @@ public class RegionFold extends FoldingBuilderEx {
 				 // because that collides with native IDE fold regions.
 				 var range = attr.getValueElement().getTextRange();
 				 var rangeWithoutQuotes = new TextRange(range.getStartOffset() + 1, range.getEndOffset() - 1);
-				 return new FoldingDescriptor(attr.getNode(), rangeWithoutQuotes, TAILWIND_GROUP);
+				 return new FoldingDescriptor(
+						attr.getNode(),
+						rangeWithoutQuotes,
+						FoldingGroup.newGroup(TAILWIND_GROUP_NAME));
 			 })
 			 .toList()
 			 .toArray(new FoldingDescriptor[0]);
@@ -39,7 +44,7 @@ public class RegionFold extends FoldingBuilderEx {
 
 	@Override
 	public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
-		return PLACEHOLDER; 
+		return PLACEHOLDER;
 	}
 
 	@Override

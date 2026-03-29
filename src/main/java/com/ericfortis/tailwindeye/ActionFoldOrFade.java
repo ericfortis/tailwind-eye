@@ -45,8 +45,13 @@ public class ActionFoldOrFade extends AnAction {
 	private static void setFold(Editor editor, boolean shouldExpand) {
 		var fm = (FoldingModelEx) editor.getFoldingModel();
 		fm.runBatchFoldingOperation(() -> {
-			for (FoldRegion r : fm.getGroupedRegions(RegionFold.TAILWIND_GROUP))
-				r.setExpanded(shouldExpand);
+			for (FoldRegion r : fm.getAllFoldRegions()) {
+				if (RegionFold.TAILWIND_GROUP_NAME.equals(
+					 r.getGroup() != null ? r.getGroup().toString() : null
+				)) {
+					r.setExpanded(shouldExpand);
+				}
+			}
 		});
 	}
 
