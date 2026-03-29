@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 public class ActionTurnOff extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
-		var editor = e.getData(CommonDataKeys.EDITOR);
 		var project = e.getProject();
+		var editor = e.getData(CommonDataKeys.EDITOR);
 		var psiFile = e.getData(CommonDataKeys.PSI_FILE);
-		if (editor == null || project == null || psiFile == null) return;
+		if (project == null || editor == null || psiFile == null) return;
 
 		var vFile = psiFile.getVirtualFile();
 		if (vFile == null) return;
