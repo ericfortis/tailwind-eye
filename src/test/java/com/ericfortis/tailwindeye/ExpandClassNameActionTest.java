@@ -5,16 +5,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 public class ExpandClassNameActionTest extends BasePlatformTestCase {
 	@Override
-	protected String getTestDataPath() {
-		return "src/test/testData";
-	}
-	
-	@Override
-	protected boolean isWriteActionRequired() {
-		return false;
-	}
-
-	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		PluginManagerCore.getLoadedPlugins().forEach(p ->
