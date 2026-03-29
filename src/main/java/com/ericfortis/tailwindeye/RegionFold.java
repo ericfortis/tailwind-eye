@@ -21,12 +21,10 @@ public class RegionFold extends FoldingBuilderEx {
 	public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
 		return SyntaxTraverser.psiTraverser(root)
 			 .filter(XmlAttribute.class)
-			 .filter(attr -> "className".equals(attr.getName()))
-			 .filter(attr -> attr.getValueElement() != null)
-			 .filter(attr -> {
-				 String value = attr.getValue();
-				 return value != null && !value.isBlank();
-			 })
+			 .filter(attr -> "className".equals(attr.getName())
+					&& attr.getValueElement() != null
+					&& attr.getValue() != null
+					&& !attr.getValue().isBlank())
 			 .map(attr -> {
 				 XmlAttributeValue valueElement = attr.getValueElement();
 				 TextRange fullRange = valueElement.getTextRange();
