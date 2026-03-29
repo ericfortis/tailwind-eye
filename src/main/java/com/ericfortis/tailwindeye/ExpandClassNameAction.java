@@ -22,8 +22,7 @@ public class ExpandClassNameAction extends AnAction {
 		var psiFile = e.getData(CommonDataKeys.PSI_FILE);
 		if (project == null || editor == null || psiFile == null) return;
 
-		var offset = editor.getCaretModel().getOffset();
-		var element = psiFile.findElementAt(offset);
+		var element = psiFile.findElementAt(editor.getCaretModel().getOffset());
 		if (element == null) return;
 
 		var attr = findClassNameAttrValue(element);
