@@ -1,6 +1,5 @@
 package com.ericfortis.tailwindeye;
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -25,10 +24,10 @@ public class ActionFoldOrFade extends AnAction {
 		if ("js".equals(vFile.getExtension())) return; // because we can't register the plugin exclusively for JSX
 
 		var nextMode = getNextMode(project, vFile);
-		
+
 		setFade(vFile, nextMode);
-		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye fade toggle");
-		
+		RegionFade.updateFade(editor, psiFile, nextMode == CoreState.EyeMode.FADE);
+
 		setFold(editor, nextMode != CoreState.EyeMode.FOLD);
 	}
 

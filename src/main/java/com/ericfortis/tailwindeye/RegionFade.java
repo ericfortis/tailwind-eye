@@ -1,48 +1,65 @@
 package com.ericfortis.tailwindeye;
 
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.Annotator;
-import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.markup.HighlighterLayer;
+import com.intellij.openapi.editor.markup.HighlighterTargetArea;
+import com.intellij.openapi.editor.markup.MarkupModel;
+import com.intellij.openapi.editor.markup.RangeHighlighter;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-// TODO study large file annotator, so perhaps we can speed up fading by not computing needless syntax
 
-public class RegionFade implements Annotator {
+public final class RegionFade {
 
 	private static final TextAttributesKey FADED_TEXT = TextAttributesKey.createTextAttributesKey(
 		 "TAILWIND_EYE_FAINT"
 	);
+	private static final Key<Boolean> TAILWIND_EYE_FADE_MARKER = Key.create("TAILWIND_EYE_FADE_MARKER");
 
-	@Override
-	public void annotate(@NotNull PsiElement root, @NotNull AnnotationHolder holder) {
-		if (!(root instanceof PsiFile psiFile))
-			return;
-		
-//		holder.getCurrentAnnotationSession().putUserData();
-		
-		var vFile = psiFile.getVirtualFile();
-		CoreState.EyeMode mode = null;
-		if (vFile != null)
-			mode = vFile.getUserData(CoreState.EYE_MODE_KEY);
+	private RegionFade() {
+	}
 
-		if (mode == null)
-			mode = CoreState.getInstance(psiFile.getProject()).getMode();
+	public static void updateFade(@NotNull Editor editor, @Nullable PsiFile psiFile, boolean enabled) {
+		MarkupModel markupModel = editor.getMarkupModel();
+		clearTailwindFadeHighlighters(markupModel);
 
-		if (mode != CoreState.EyeMode.FADE)
+		if (!enabled || psiFile == null)
 			return;
 
+		for (TextRange range : getFadeRanges(psiFile)) {
+			RangeHighlighter highlighter = markupModel.addRangeHighlighter(
+				 range.getStartOffset(),
+				 range.getEndOffset(),
+				 HighlighterLayer.SYNTAX,
+				 null,
+				 HighlighterTargetArea.EXACT_RANGE
+			);
+			highlighter.setTextAttributesKey(FADED_TEXT);
+			highlighter.putUserData(TAILWIND_EYE_FADE_MARKER, true);
+		}
+	}
+
+	private static void clearTailwindFadeHighlighters(MarkupModel markupModel) {
+		for (RangeHighlighter highlighter : markupModel.getAllHighlighters())
+			if (Boolean.TRUE.equals(highlighter.getUserData(TAILWIND_EYE_FADE_MARKER)))
+				markupModel.removeHighlighter(highlighter);
+	}
+
+	private static List<TextRange> getFadeRanges(@NotNull PsiFile psiFile) {
 		List<TextRange> keepRanges = new ArrayList<>();
 
-		root.accept(new PsiRecursiveElementWalkingVisitor() {
+		psiFile.accept(new PsiRecursiveElementWalkingVisitor() {
 			@Override
 			public void visitElement(@NotNull PsiElement element) {
 				if (element instanceof XmlTag tag)
@@ -51,40 +68,36 @@ public class RegionFade implements Annotator {
 			}
 		});
 
+		keepRanges.sort(Comparator.comparingInt(TextRange::getStartOffset));
 		int textLength = psiFile.getTextLength();
+		List<TextRange> fadeRanges = new ArrayList<>();
 		if (keepRanges.isEmpty()) {
 			if (textLength > 0)
-				annotateFaint(0, textLength, holder);
-			return;
+				fadeRanges.add(new TextRange(0, textLength));
+			return fadeRanges;
 		}
 
 		int lastEnd = 0;
 		for (TextRange range : keepRanges) {
 			if (range.getStartOffset() > lastEnd)
-				annotateFaint(lastEnd, range.getStartOffset(), holder);
+				fadeRanges.add(new TextRange(lastEnd, range.getStartOffset()));
 			lastEnd = Math.max(lastEnd, range.getEndOffset());
 		}
 
 		if (lastEnd < textLength)
-			annotateFaint(lastEnd, textLength, holder);
+			fadeRanges.add(new TextRange(lastEnd, textLength));
+
+		return fadeRanges;
 	}
 
-	private void visitTag(XmlTag tag, List<TextRange> keepRanges) {
+	private static void visitTag(XmlTag tag, List<TextRange> keepRanges) {
 		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
 		var attribute = tag.getAttribute("className");
 		if (attribute != null) {
 			var value = attribute.getValueElement();
-			if (value != null) 
+			if (value != null)
 				keepRanges.add(value.getValueTextRange());
 		}
-	}
-
-	private void annotateFaint(int start, int end, AnnotationHolder holder) {
-		if (start < end)
-			holder.newAnnotation(HighlightSeverity.TEXT_ATTRIBUTES, "")
-				 .range(new TextRange(start, end))
-				 .textAttributes(FADED_TEXT)
-				 .create();
 	}
 }

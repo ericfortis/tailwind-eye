@@ -1,6 +1,5 @@
 package com.ericfortis.tailwindeye;
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -18,8 +17,8 @@ public class ActionTurnOff extends AnAction {
 		if (vFile == null) return;
 
 		ActionFoldOrFade.unfold(editor);
-		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye off"); 
-		
+		RegionFade.updateFade(editor, psiFile, false);
+
 		ActionFoldOrFade.unfade(vFile);
 	}
 }

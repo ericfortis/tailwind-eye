@@ -34,10 +34,6 @@
     <lang.foldingBuilder language="ECMAScript 6" implementationClass="com.ericfortis.tailwindeye.RegionFold"/>
     <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.RegionFold"/>
 
-    <annotator language="ECMAScript 6" implementationClass="com.ericfortis.tailwindeye.RegionFade"/>
-    <annotator language="HTML" implementationClass="com.ericfortis.tailwindeye.RegionFade"/>
-    <annotator language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.RegionFade"/>
-
     <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>
     <colorSettingsPage implementation="com.ericfortis.tailwindeye.SettingsPage"/>

@@ -13,7 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-/** Refactors a className into a row or column. IOW, inline or multiline. */
+/**
+ * Refactors a className into a row or column. IOW, inline or multiline.
+ */
 public class ActionTranspose extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
@@ -21,7 +23,7 @@ public class ActionTranspose extends AnAction {
 		var editor = e.getData(CommonDataKeys.EDITOR);
 		var psiFile = e.getData(CommonDataKeys.PSI_FILE);
 		if (project == null || editor == null || psiFile == null) return;
-		
+
 		var element = psiFile.findElementAt(editor.getCaretModel().getOffset());
 		if (element == null) return;
 
