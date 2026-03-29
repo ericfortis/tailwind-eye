@@ -25,9 +25,10 @@ public class ActionFoldOrFade extends AnAction {
 		if ("js".equals(vFile.getExtension())) return; // because we can't register the plugin exclusively for JSX
 
 		var nextMode = getNextMode(project, vFile);
-		setFade(vFile, nextMode);
 		setFold(editor, nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
-		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye toggle");
+		
+		setFade(vFile, nextMode);
+		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye toggle"); // just for fade
 	}
 	
 	private static CoreState.FadingMode getNextMode(Project project, VirtualFile vFile) {
