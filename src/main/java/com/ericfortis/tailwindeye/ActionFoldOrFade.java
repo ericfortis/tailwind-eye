@@ -31,10 +31,9 @@ public class ActionFoldOrFade extends AnAction {
 	}
 	
 	private static CoreState.FadingMode getNextMode(Project project, VirtualFile vFile) {
-		var coreState = CoreState.getInstance(project);
 		var currentMode = vFile.getUserData(CoreState.FADING_MODE_KEY);
 		if (currentMode == null)
-			currentMode = coreState.getMode();
+			currentMode = CoreState.getInstance(project).getMode();
 		return currentMode.next();
 	}
 
