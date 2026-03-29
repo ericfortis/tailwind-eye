@@ -41,7 +41,7 @@ public final class RegionFade {
 			RangeHighlighter highlighter = markupModel.addRangeHighlighter(
 				 range.getStartOffset(),
 				 range.getEndOffset(),
-				 HighlighterLayer.SYNTAX,
+				 HighlighterLayer.WARNING,
 				 null,
 				 HighlighterTargetArea.EXACT_RANGE
 			);
