@@ -33,47 +33,63 @@ public class ExpandClassNameAction extends AnAction {
 		XmlAttributeValue cnameVal = findClosestClassNameAttr(element);
 		if (cnameVal == null) return;
 
-		// Get the range of the attribute value including quotes
 		TextRange rangeToUse = cnameVal.getTextRange();
-		String rawTextToUse = cnameVal.getText();
+		String rawText = cnameVal.getText();
 
-		// Handle expansion (from double quotes to multiline)
-		if (rawTextToUse.startsWith("\"") && rawTextToUse.endsWith("\"")) {
-			String content = rawTextToUse.substring(1, rawTextToUse.length() - 1);
-			if (content.isBlank()) return;
-
-			String[] classes = content.split("\\s+");
-			String newContent = Arrays.stream(classes)
-				 .filter(s -> !s.isEmpty())
-				 .collect(Collectors.joining("\n"));
-
-			String replacement = "{`\n" + newContent + "\n`}";
-
+		if (isInMultiline(rawText)) {
+			String replacement = toInline(rawText);
+			if (replacement == null) return;
+			WriteCommandAction.runWriteCommandAction(project, "Inline ClassName", null, () ->
+				 editor.getDocument().replaceString(rangeToUse.getStartOffset(), rangeToUse.getEndOffset(), replacement));
+		} else if (isInInline(rawText)) {
+			String replacement = toMultiline(rawText);
+			if (replacement == null) return;
 			WriteCommandAction.runWriteCommandAction(project, "Expand ClassName", null, () ->
 				 editor.getDocument().replaceString(rangeToUse.getStartOffset(), rangeToUse.getEndOffset(), replacement));
-			return;
 		}
+	}
 
-		// Handle inlining (from multiline to double quotes)
-		String trimmedRaw = rawTextToUse.trim();
-		if (trimmedRaw.startsWith("{") && trimmedRaw.endsWith("}")) {
-			String content = trimmedRaw.substring(1, trimmedRaw.length() - 1).trim();
-			if (content.startsWith("`") && content.endsWith("`")) {
-				content = content.substring(1, content.length() - 1).trim();
-
-				if (content.isBlank()) return;
-
-				String[] classes = content.split("\\s+");
-				String newContent = Arrays.stream(classes)
-					 .filter(s -> !s.isEmpty())
-					 .collect(Collectors.joining(" "));
-
-				String replacement = "\"" + newContent + "\"";
-
-				WriteCommandAction.runWriteCommandAction(project, "Inline ClassName", null, () ->
-					 editor.getDocument().replaceString(rangeToUse.getStartOffset(), rangeToUse.getEndOffset(), replacement));
-			}
+	private boolean isInMultiline(String text) {
+		String trimmed = text.trim();
+		if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
+			trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
 		}
+		return trimmed.startsWith("{") && trimmed.endsWith("}") &&
+			 trimmed.substring(1, trimmed.length() - 1).trim().startsWith("`") &&
+			 trimmed.substring(1, trimmed.length() - 1).trim().endsWith("`");
+	}
+
+	private boolean isInInline(String text) {
+		if (isInMultiline(text)) return false;
+		return text.startsWith("\"") && text.endsWith("\"");
+	}
+
+	private String toInline(String text) {
+		String trimmed = text.trim();
+		if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
+			trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+		}
+		String content = trimmed.substring(1, trimmed.length() - 1).trim();
+		content = content.substring(1, content.length() - 1).trim();
+
+		if (content.isBlank()) return null;
+
+		String newContent = Arrays.stream(content.split("\\s+"))
+			 .filter(s -> !s.isEmpty())
+			 .collect(Collectors.joining(" "));
+
+		return "\"" + newContent + "\"";
+	}
+
+	private String toMultiline(String text) {
+		String content = text.substring(1, text.length() - 1);
+		if (content.isBlank()) return null;
+
+		String newContent = Arrays.stream(content.split("\\s+"))
+			 .filter(s -> !s.isEmpty())
+			 .collect(Collectors.joining("\n"));
+
+		return "{`\n" + newContent + "\n`}";
 	}
 
 	private XmlAttributeValue findClosestClassNameAttr(PsiElement element) {
