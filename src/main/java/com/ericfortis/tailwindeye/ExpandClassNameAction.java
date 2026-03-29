@@ -32,8 +32,7 @@ public class ExpandClassNameAction extends AnAction {
 		XmlAttributeValue attr = findClassNameAttrValue(element);
 		if (attr == null) return;
 
-		String rawText = attr.getText();
-		String replacement = toggle(rawText);
+		String replacement = toggle(attr.getText());
 		if (replacement == null) return;
 
 		TextRange range = attr.getTextRange();
