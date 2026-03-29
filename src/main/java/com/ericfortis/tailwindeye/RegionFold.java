@@ -37,7 +37,7 @@ public class RegionFold extends FoldingBuilderEx {
 
 	@Override
 	public @Nullable String getPlaceholderText(@NotNull ASTNode node) {
-		return "…";
+		return "\uD83D\uDCA8…"; // wind emoji and ellipsis
 	}
 
 	@Override
