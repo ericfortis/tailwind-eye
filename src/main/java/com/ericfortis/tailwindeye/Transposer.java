@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class ExpandClassNameAction extends AnAction {
+public class Transposer extends AnAction {
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
@@ -32,7 +32,7 @@ public class ExpandClassNameAction extends AnAction {
 		if (replacement == null) return;
 
 		var range = attr.getTextRange();
-		WriteCommandAction.runWriteCommandAction(project, "Toggle ClassName", null, () ->
+		WriteCommandAction.runWriteCommandAction(project, "Transpose ClassName", null, () ->
 			 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
 	}
 
