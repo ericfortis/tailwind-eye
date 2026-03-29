@@ -48,9 +48,9 @@ public class ExpandClassNameAction extends AnAction {
 		for (PsiElement current = element; current != null && !(current instanceof PsiFile); current = current.getParent())
 			if (current instanceof XmlAttributeValue value
 				 && value.getParent() instanceof XmlAttribute attribute
-				 && "className".equals(attribute.getName())) {
+				 && "className".equals(attribute.getName())
+			)
 				return value;
-			}
 		return null;
 	}
 
@@ -71,8 +71,9 @@ public class ExpandClassNameAction extends AnAction {
 
 	private static String toMultiline(String text) {
 		String content = text.substring(1, text.length() - 1).trim();
-		if (content.isBlank()) return null;
-		return MULTILINE_PREFIX + "\n" + splitOnWhitespace(content) + "\n" + MULTILINE_SUFFIX;
+		return content.isBlank()
+			 ? null
+			 : MULTILINE_PREFIX + "\n" + splitOnWhitespace(content) + "\n" + MULTILINE_SUFFIX;
 	}
 
 	private static String normalizeSpaces(String text) {
