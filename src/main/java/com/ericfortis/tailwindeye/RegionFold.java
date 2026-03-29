@@ -9,7 +9,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SyntaxTraverser;
 import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlAttributeValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,9 +25,8 @@ public class RegionFold extends FoldingBuilderEx {
 					&& attr.getValue() != null
 					&& !attr.getValue().isBlank())
 			 .map(attr -> {
-				 XmlAttributeValue valueElement = attr.getValueElement();
-				 TextRange fullRange = valueElement.getTextRange();
-				 TextRange innerRange = new TextRange(fullRange.getStartOffset() + 1, fullRange.getEndOffset() - 1);
+				 var fullRange = attr.getValueElement().getTextRange();
+				 var innerRange = new TextRange(fullRange.getStartOffset() + 1, fullRange.getEndOffset() - 1);
 				 return new FoldingDescriptor(attr.getNode(), innerRange, TAILWIND_GROUP);
 			 })
 			 .toList()
