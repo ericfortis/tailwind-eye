@@ -28,12 +28,36 @@ public class RegionFoldTest extends BasePlatformTestCase {
 		myFixture.configureByText("test.html",
 			 "<tag id=\"main\" title=\"Home\">Hello</tag>");
 
-		var builder = new RegionFold();
-		var descriptors = builder.buildFoldRegions(
+		var descriptors = new RegionFold().buildFoldRegions(
 			 myFixture.getFile(),
 			 myFixture.getEditor().getDocument(),
 			 false
 		);
 		assertEquals("Should have no folding descriptors", 0, descriptors.length);
+	}
+
+	public void testNoFoldingForEmptyClassName() {
+		myFixture.configureByText("test.html",
+			 "<tag className=\"\">Hello</tag>");
+
+		var descriptors = new RegionFold().buildFoldRegions(
+			 myFixture.getFile(),
+			 myFixture.getEditor().getDocument(),
+			 false
+		);
+		assertEquals("Should have no folding descriptors for empty value", 0, descriptors.length);
+	}
+
+	public void testNoFoldingForVeryShortClassName() {
+		// Just a single quote or something else that doesn't match our filter
+		myFixture.configureByText("test.html",
+			 "<tag className=>Hello</tag>");
+
+		var descriptors = new RegionFold().buildFoldRegions(
+			 myFixture.getFile(),
+			 myFixture.getEditor().getDocument(),
+			 false
+		);
+		assertEquals("Should have no folding descriptors for invalid className", 0, descriptors.length);
 	}
 }
