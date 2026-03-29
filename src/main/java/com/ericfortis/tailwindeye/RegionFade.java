@@ -1,6 +1,7 @@
 package com.ericfortis.tailwindeye;
 
 import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.project.DumbAware;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegionFade implements com.intellij.lang.annotation.Annotator, DumbAware {
+public class RegionFade implements Annotator, DumbAware {
 
 	private static final TextAttributesKey FADED_TEXT = TextAttributesKey.createTextAttributesKey(
 		 "TAILWIND_EYE_FAINT"
