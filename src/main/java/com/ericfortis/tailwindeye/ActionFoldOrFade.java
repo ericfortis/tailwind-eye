@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.FoldRegion;
 import com.intellij.openapi.editor.ex.FoldingModelEx;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,16 +24,18 @@ public class ActionFoldOrFade extends AnAction {
 
 		if ("js".equals(vFile.getExtension())) return; // because we can't register the plugin exclusively for JSX
 
-		var coreState = CoreState.getInstance(project);
-		CoreState.FadingMode currentMode = vFile.getUserData(CoreState.FADING_MODE_KEY);
-		if (currentMode == null)
-			currentMode = coreState.getMode();
-
-		CoreState.FadingMode nextMode = currentMode.next();
-
+		var nextMode = getNextMode(project, vFile);
 		setFade(vFile, nextMode);
 		setFold(editor, nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye toggle");
+	}
+	
+	private static CoreState.FadingMode getNextMode(Project project, VirtualFile vFile) {
+		var coreState = CoreState.getInstance(project);
+		var currentMode = vFile.getUserData(CoreState.FADING_MODE_KEY);
+		if (currentMode == null)
+			currentMode = coreState.getMode();
+		return currentMode.next();
 	}
 
 	private static void setFade(VirtualFile vFile, CoreState.FadingMode nextMode) {
