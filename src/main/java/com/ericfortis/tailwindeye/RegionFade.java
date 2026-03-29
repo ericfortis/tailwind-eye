@@ -27,6 +27,8 @@ public class RegionFade implements Annotator {
 		if (!(root instanceof PsiFile psiFile))
 			return;
 		
+//		holder.getCurrentAnnotationSession().putUserData();
+		
 		var vFile = psiFile.getVirtualFile();
 		CoreState.FadingMode mode = null;
 		if (vFile != null)

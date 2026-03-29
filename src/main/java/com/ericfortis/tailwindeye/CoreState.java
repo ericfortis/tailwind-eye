@@ -44,8 +44,4 @@ public final class CoreState implements PersistentStateComponent<CoreState> {
 	public void loadState(@NotNull CoreState state) {
 		XmlSerializerUtil.copyBean(state, this);
 	}
-
-	public boolean isFading() {
-		return mode == FadingMode.NON_STYLING;
-	}
 }
