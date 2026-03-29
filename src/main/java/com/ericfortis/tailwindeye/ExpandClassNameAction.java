@@ -62,8 +62,7 @@ public class ExpandClassNameAction extends AnAction {
 	}
 
 	private boolean caretInMultiline(String text) {
-		String t = text.trim();
-		return t.startsWith("{`") && t.endsWith("`}");
+		return text.startsWith("{`") && text.endsWith("`}");
 	}
 
 	private boolean caretInInline(String text) {
