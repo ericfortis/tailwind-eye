@@ -7,10 +7,10 @@ public class TransposerTest extends BasePlatformTestCase {
 	public final String multiline = "{`\nflex\nflex-col\n`}";
 
 	public void testToMultiline() {
-		assertEquals(Transposer.toggle(inline), multiline);
+		assertEquals(ActionTranspose.toggle(inline), multiline);
 	}
 
 	public void testToInline() {
-		assertEquals(Transposer.toggle(multiline), inline);
+		assertEquals(ActionTranspose.toggle(multiline), inline);
 	}
 }

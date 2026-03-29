@@ -8,7 +8,7 @@ import com.intellij.openapi.editor.FoldRegion;
 import com.intellij.openapi.editor.ex.FoldingModelEx;
 import org.jetbrains.annotations.NotNull;
 
-public class TurnOffAction extends AnAction {
+public class ActionTurnOff extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		var editor = e.getData(CommonDataKeys.EDITOR);

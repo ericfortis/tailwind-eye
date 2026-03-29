@@ -9,20 +9,20 @@
 
   <actions>
     <action id="TailwindEye.Toggle"
-            class="com.ericfortis.tailwindeye.ToggleAction"
+            class="com.ericfortis.tailwindeye.ActionReveal"
             text="Toggle Tailwind Eye"
             description="Either Folds classNames or Fades non-classNames">
       <add-to-group group-id="ViewMenu" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
     </action>
     <action id="TailwindEye.TurnOff"
-            class="com.ericfortis.tailwindeye.TurnOffAction"
+            class="com.ericfortis.tailwindeye.ActionTurnOff"
             text="Turn Off Tailwind Eye"
             description="Turns off all Tailwind Eye effects">
       <add-to-group group-id="ViewMenu" anchor="after" relative-to-action="TailwindEye.Toggle"/>
     </action>
     <action id="TailwindEye.EditString"
-            class="com.ericfortis.tailwindeye.Transposer"
+            class="com.ericfortis.tailwindeye.ActionTranspose"
             text="Transpose ClassName"
             description="Cycles between row (inline) or column (multiline)">
       <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>

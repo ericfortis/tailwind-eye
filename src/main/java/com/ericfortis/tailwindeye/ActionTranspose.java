@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class Transposer extends AnAction {
+public class ActionTranspose extends AnAction {
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
