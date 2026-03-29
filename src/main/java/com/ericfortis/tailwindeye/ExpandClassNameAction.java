@@ -21,7 +21,7 @@ public class ExpandClassNameAction extends AnAction {
 		var editor = e.getData(CommonDataKeys.EDITOR);
 		var psiFile = e.getData(CommonDataKeys.PSI_FILE);
 		if (project == null || editor == null || psiFile == null) return;
-
+		
 		var element = psiFile.findElementAt(editor.getCaretModel().getOffset());
 		if (element == null) return;
 
@@ -56,16 +56,12 @@ public class ExpandClassNameAction extends AnAction {
 
 	private static String toInline(String text) {
 		var content = text.substring(2, text.length() - 2).trim();
-		return content.isBlank()
-			 ? null
-			 : "\"" + normalizeSpaces(content) + "\"";
+		return "\"" + normalizeSpaces(content) + "\"";
 	}
 
 	private static String toMultiline(String text) {
 		var content = text.substring(1, text.length() - 1).trim();
-		return content.isBlank()
-			 ? null
-			 : "{`\n" + splitOnWhitespace(content) + "\n`}";
+		return "{`\n" + splitOnWhitespace(content) + "\n`}";
 	}
 
 	private static String normalizeSpaces(String text) {
