@@ -4,8 +4,6 @@ import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.editor.FoldRegion;
-import com.intellij.openapi.editor.ex.FoldingModelEx;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionTurnOff extends AnAction {
@@ -22,11 +20,6 @@ public class ActionTurnOff extends AnAction {
 		vFile.putUserData(CoreState.FADING_MODE_KEY, CoreState.FadingMode.OFF);
 
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye off");
-
-		var fm = (FoldingModelEx) editor.getFoldingModel();
-		fm.runBatchFoldingOperation(() -> {
-			for (FoldRegion r : fm.getGroupedRegions(RegionFold.TAILWIND_GROUP))
-				r.setExpanded(true);
-		});
+		ActionFoldOrFade.doFold(editor, true);
 	}
 }
