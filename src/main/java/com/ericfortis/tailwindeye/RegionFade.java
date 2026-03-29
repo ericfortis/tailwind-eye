@@ -12,7 +12,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,12 +30,11 @@ public final class RegionFade {
 	private RegionFade() {
 	}
 
-	public static void updateFade(@NotNull Editor editor, @Nullable PsiFile psiFile, boolean enabled) {
+	public static void updateFade(@NotNull Editor editor, @NotNull PsiFile psiFile, boolean enabled) {
 		var markupModel = editor.getMarkupModel();
 		clearTailwindFadeHighlighters(markupModel);
 
-		if (!enabled || psiFile == null)
-			return;
+		if (!enabled) return;
 
 		for (var range : getFadeRanges(psiFile)) {
 			var highlighter = markupModel.addRangeHighlighter(
