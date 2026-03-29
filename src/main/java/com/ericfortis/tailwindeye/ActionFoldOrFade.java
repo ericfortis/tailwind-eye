@@ -21,8 +21,6 @@ public class ActionFoldOrFade extends AnAction {
 		var vFile = psiFile.getVirtualFile();
 		if (vFile == null) return;
 
-		if ("js".equals(vFile.getExtension())) return; // because we can't register the plugin exclusively for JSX
-
 		var nextMode = getNextMode(project, vFile);
 
 		setFade(vFile, nextMode);
