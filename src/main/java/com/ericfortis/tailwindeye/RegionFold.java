@@ -25,9 +25,11 @@ public class RegionFold extends FoldingBuilderEx {
 					&& attr.getValue() != null
 					&& !attr.getValue().isBlank())
 			 .map(attr -> {
-				 var fullRange = attr.getValueElement().getTextRange();
-				 var innerRange = new TextRange(fullRange.getStartOffset() + 1, fullRange.getEndOffset() - 1);
-				 return new FoldingDescriptor(attr.getNode(), innerRange, TAILWIND_GROUP);
+				 // we need to create a non-overlapping fold, so we can't fold the full className="", 
+				 // because that collides with native IDE fold regions.
+				 var range = attr.getValueElement().getTextRange();
+				 var rangeWithoutQuotes = new TextRange(range.getStartOffset() + 1, range.getEndOffset() - 1);
+				 return new FoldingDescriptor(attr.getNode(), rangeWithoutQuotes, TAILWIND_GROUP);
 			 })
 			 .toList()
 			 .toArray(new FoldingDescriptor[0]);
