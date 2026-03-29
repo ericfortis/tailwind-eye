@@ -35,12 +35,12 @@ public class ExpandClassNameAction extends AnAction {
 		TextRange range = attr.getTextRange();
 		String rawText = attr.getText();
 
-		if (isInMultiline(rawText)) {
+		if (caretInMultiline(rawText)) {
 			String replacement = toInline(rawText);
 			if (replacement == null) return;
 			WriteCommandAction.runWriteCommandAction(project, "Inline ClassName", null, () ->
 				 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
-		} else if (isInInline(rawText)) {
+		} else if (caretInInline(rawText)) {
 			String replacement = toMultiline(rawText);
 			if (replacement == null) return;
 			WriteCommandAction.runWriteCommandAction(project, "Expand ClassName", null, () ->
@@ -48,27 +48,37 @@ public class ExpandClassNameAction extends AnAction {
 		}
 	}
 
-	private boolean isInMultiline(String text) {
-		String trimmed = text.trim();
-		if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
-			trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+	private XmlAttributeValue findClosestClassNameAttrValue(PsiElement element) {
+		PsiElement current = element;
+		while (current != null && !(current instanceof PsiFile)) {
+			if (current instanceof XmlAttributeValue value) {
+				PsiElement parent = value.getParent();
+				if (parent instanceof XmlAttribute attribute && "className".equals(attribute.getName()))
+					return value;
+			}
+			current = current.getParent();
 		}
-		return trimmed.startsWith("{") && trimmed.endsWith("}") &&
-			 trimmed.substring(1, trimmed.length() - 1).trim().startsWith("`") &&
-			 trimmed.substring(1, trimmed.length() - 1).trim().endsWith("`");
+		return null;
 	}
 
-	private boolean isInInline(String text) {
-		if (isInMultiline(text)) return false;
-		return text.startsWith("\"") && text.endsWith("\"");
+	private boolean caretInMultiline(String text) {
+		String t = text.trim();
+		if (t.startsWith("\"") && t.endsWith("\"")) 
+			t = t.substring(1, t.length() - 1).trim();
+		return t.startsWith("{") && t.endsWith("}") &&
+			 t.substring(1, t.length() - 1).trim().startsWith("`") &&
+			 t.substring(1, t.length() - 1).trim().endsWith("`");
+	}
+
+	private boolean caretInInline(String text) {
+		return !caretInMultiline(text) && text.startsWith("\"") && text.endsWith("\"");
 	}
 
 	private String toInline(String text) {
-		String trimmed = text.trim();
-		if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
-			trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
-		}
-		String content = trimmed.substring(1, trimmed.length() - 1).trim();
+		String t = text.trim();
+		if (t.startsWith("\"") && t.endsWith("\"")) 
+			t = t.substring(1, t.length() - 1).trim();
+		String content = t.substring(1, t.length() - 1).trim();
 		content = content.substring(1, content.length() - 1).trim();
 
 		if (content.isBlank()) return null;
@@ -89,18 +99,5 @@ public class ExpandClassNameAction extends AnAction {
 			 .collect(Collectors.joining("\n"));
 
 		return "{`\n" + newContent + "\n`}";
-	}
-
-	private XmlAttributeValue findClosestClassNameAttrValue(PsiElement element) {
-		PsiElement current = element;
-		while (current != null && !(current instanceof PsiFile)) {
-			if (current instanceof XmlAttributeValue value) {
-				PsiElement parent = value.getParent();
-				if (parent instanceof XmlAttribute attribute && "className".equals(attribute.getName()))
-					return value;
-			}
-			current = current.getParent();
-		}
-		return null;
 	}
 }
