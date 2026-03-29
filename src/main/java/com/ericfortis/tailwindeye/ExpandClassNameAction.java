@@ -4,9 +4,6 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlAttribute;
@@ -20,22 +17,22 @@ public class ExpandClassNameAction extends AnAction {
 
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
-		Project project = e.getProject();
-		Editor editor = e.getData(CommonDataKeys.EDITOR);
-		PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
+		var project = e.getProject();
+		var editor = e.getData(CommonDataKeys.EDITOR);
+		var psiFile = e.getData(CommonDataKeys.PSI_FILE);
 		if (project == null || editor == null || psiFile == null) return;
 
-		int offset = editor.getCaretModel().getOffset();
-		PsiElement element = psiFile.findElementAt(offset);
+		var offset = editor.getCaretModel().getOffset();
+		var element = psiFile.findElementAt(offset);
 		if (element == null) return;
 
-		XmlAttributeValue attr = findClassNameAttrValue(element);
+		var attr = findClassNameAttrValue(element);
 		if (attr == null) return;
 
-		String replacement = toggle(attr.getText());
+		var replacement = toggle(attr.getText());
 		if (replacement == null) return;
 
-		TextRange range = attr.getTextRange();
+		var range = attr.getTextRange();
 		WriteCommandAction.runWriteCommandAction(project, "Toggle ClassName", null, () ->
 			 editor.getDocument().replaceString(range.getStartOffset(), range.getEndOffset(), replacement));
 	}
@@ -59,14 +56,14 @@ public class ExpandClassNameAction extends AnAction {
 	}
 
 	private static String toInline(String text) {
-		String content = text.substring(2, text.length() - 2).trim();
+		var content = text.substring(2, text.length() - 2).trim();
 		return content.isBlank()
 			 ? null
 			 : "\"" + normalizeSpaces(content) + "\"";
 	}
 
 	private static String toMultiline(String text) {
-		String content = text.substring(1, text.length() - 1).trim();
+		var content = text.substring(1, text.length() - 1).trim();
 		return content.isBlank()
 			 ? null
 			 : "{`\n" + splitOnWhitespace(content) + "\n`}";
