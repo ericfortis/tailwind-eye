@@ -71,8 +71,6 @@ public class ExpandClassNameAction extends AnAction {
 
 	private String toInline(String text) {
 		String t = text.trim();
-		if (t.startsWith("\"") && t.endsWith("\"")) 
-			t = t.substring(1, t.length() - 1).trim();
 		String content = t.substring(1, t.length() - 1).trim();
 		content = content.substring(1, content.length() - 1).trim();
 
