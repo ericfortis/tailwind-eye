@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/** Refactors a className into a row or column. IOW, inline or multiline. */
 public class ActionTranspose extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
