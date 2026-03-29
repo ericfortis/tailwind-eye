@@ -3,12 +3,12 @@ package com.ericfortis.tailwindeye;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
-public class FoldingBuilderTest extends BasePlatformTestCase {
+public class RegionFoldTest extends BasePlatformTestCase {
 	public void testFoldingRegions() {
 		myFixture.configureByText("test.html",
 			 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
 
-		ClassNameFolding builder = new ClassNameFolding();
+		RegionFold builder = new RegionFold();
 		FoldingDescriptor[] descriptors = builder.buildFoldRegions(
 			 myFixture.getFile(),
 			 myFixture.getEditor().getDocument(),
@@ -29,7 +29,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 		myFixture.configureByText("test.html",
 			 "<tag id=\"main\" title=\"Home\">Hello</tag>");
 
-		ClassNameFolding builder = new ClassNameFolding();
+		RegionFold builder = new RegionFold();
 		FoldingDescriptor[] descriptors = builder.buildFoldRegions(
 			 myFixture.getFile(),
 			 myFixture.getEditor().getDocument(),
@@ -43,7 +43,7 @@ public class FoldingBuilderTest extends BasePlatformTestCase {
 		myFixture.configureByText("test.html",
 			 "<tag className=\"\">Hello</tag>");
 
-		ClassNameFolding builder = new ClassNameFolding();
+		RegionFold builder = new RegionFold();
 		FoldingDescriptor[] descriptors = builder.buildFoldRegions(
 			 myFixture.getFile(),
 			 myFixture.getEditor().getDocument(),

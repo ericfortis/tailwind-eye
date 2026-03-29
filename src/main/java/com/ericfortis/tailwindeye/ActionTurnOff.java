@@ -25,7 +25,7 @@ public class ActionTurnOff extends AnAction {
 
 		var fm = (FoldingModelEx) editor.getFoldingModel();
 		fm.runBatchFoldingOperation(() -> {
-			for (FoldRegion r : fm.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
+			for (FoldRegion r : fm.getGroupedRegions(RegionFold.TAILWIND_GROUP))
 				r.setExpanded(true);
 		});
 	}

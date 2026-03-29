@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyntaxFader implements com.intellij.lang.annotation.Annotator, DumbAware {
+public class RegionFade implements com.intellij.lang.annotation.Annotator, DumbAware {
 
 	private static final TextAttributesKey FADED_TEXT = TextAttributesKey.createTextAttributesKey(
 		 "TAILWIND_EYE_FAINT"

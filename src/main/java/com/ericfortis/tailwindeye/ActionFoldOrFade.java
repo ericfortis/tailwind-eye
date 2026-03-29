@@ -8,7 +8,7 @@ import com.intellij.openapi.editor.FoldRegion;
 import com.intellij.openapi.editor.ex.FoldingModelEx;
 import org.jetbrains.annotations.NotNull;
 
-public class ActionReveal extends AnAction {
+public class ActionFoldOrFade extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
 		var editor = e.getData(CommonDataKeys.EDITOR);
@@ -35,7 +35,7 @@ public class ActionReveal extends AnAction {
 
 		var fm = (FoldingModelEx) editor.getFoldingModel();
 		fm.runBatchFoldingOperation(() -> {
-			for (FoldRegion r : fm.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
+			for (FoldRegion r : fm.getGroupedRegions(RegionFold.TAILWIND_GROUP))
 				r.setExpanded(shouldExpand);
 		});
 	}
