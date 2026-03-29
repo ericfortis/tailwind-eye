@@ -1,9 +1,19 @@
 package com.ericfortis.tailwindeye;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.intellij.lang.javascript.JSBaseEditorTestCase;
 
-// TODO it should work with jsx
-public class ExpandClassNameActionTest extends BasePlatformTestCase {
+public class ExpandClassNameActionTest extends JSBaseEditorTestCase {
+	@Override
+	protected String getTestDataPath() {
+		return "";
+	}
+
+	public void testJsxFileTypeResolution() {
+		myFixture.configureByText("test.jsx", "<div className=\"x\"></div>");
+		assertFalse("PLAIN_TEXT".equals(myFixture.getFile().getFileType().getName()));
+		assertFalse("TEXT".equals(myFixture.getFile().getLanguage().getID()));
+	}
+
 	public void testToMultiline() {
 		myFixture.configureByText("test.jsx", "<div className=\"my-2 <caret>flex flex-col\"></div>");
 		myFixture.testAction(new ExpandClassNameAction());
