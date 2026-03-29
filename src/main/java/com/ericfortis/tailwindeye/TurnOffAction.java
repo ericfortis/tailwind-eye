@@ -15,23 +15,19 @@ import org.jetbrains.annotations.NotNull;
 public class TurnOffAction extends AnAction {
 	@Override
 	public void actionPerformed(@NotNull AnActionEvent e) {
-		Editor editor = e.getData(CommonDataKeys.EDITOR);
-		if (editor == null) return;
+		var editor = e.getData(CommonDataKeys.EDITOR);
+		var project = e.getProject();
+		var psiFile = e.getData(CommonDataKeys.PSI_FILE);
+		if (editor == null || project == null || psiFile == null) return;
 
-		Project project = e.getProject();
-		if (project == null) return;
-
-		PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
-		if (psiFile == null) return;
-
-		VirtualFile vFile = psiFile.getVirtualFile();
+		var vFile = psiFile.getVirtualFile();
 		if (vFile == null) return;
 
 		vFile.putUserData(CoreState.FADING_MODE_KEY, CoreState.FadingMode.OFF);
 
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye off");
 
-		FoldingModelEx fm = (FoldingModelEx) editor.getFoldingModel();
+		var fm = (FoldingModelEx) editor.getFoldingModel();
 		fm.runBatchFoldingOperation(() -> {
 			for (FoldRegion r : fm.getGroupedRegions(ClassNameFolding.TAILWIND_GROUP))
 				r.setExpanded(true);

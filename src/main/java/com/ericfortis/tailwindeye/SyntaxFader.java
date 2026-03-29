@@ -5,12 +5,9 @@ import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
-import com.intellij.psi.xml.XmlAttribute;
-import com.intellij.psi.xml.XmlAttributeValue;
 import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,15 +28,13 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator, Dumb
 		if (!(root instanceof PsiFile psiFile))
 			return;
 
-		VirtualFile vFile = psiFile.getVirtualFile();
+		var vFile = psiFile.getVirtualFile();
 		CoreState.FadingMode mode = null;
-		if (vFile != null) {
+		if (vFile != null)
 			mode = vFile.getUserData(CoreState.FADING_MODE_KEY);
-		}
 
-		if (mode == null) {
+		if (mode == null)
 			mode = CoreState.getInstance(psiFile.getProject()).getMode();
-		}
 
 		if (mode != CoreState.FadingMode.NON_STYLING)
 			return;
@@ -76,9 +71,9 @@ public class SyntaxFader implements com.intellij.lang.annotation.Annotator, Dumb
 	private void visitTag(XmlTag tag, List<TextRange> keepRanges, AnnotationHolder holder) {
 		keepRanges.add(tag.getFirstChild().getNextSibling().getTextRange()); // tag name
 
-		XmlAttribute attribute = tag.getAttribute("className");
+		var attribute = tag.getAttribute("className");
 		if (attribute != null) {
-			XmlAttributeValue value = attribute.getValueElement();
+			var value = attribute.getValueElement();
 			if (value != null) {
 				keepRanges.add(value.getValueTextRange());
 				annotateClassName(keepRanges.getLast(), holder);
