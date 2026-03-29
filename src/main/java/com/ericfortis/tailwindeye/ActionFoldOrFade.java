@@ -39,7 +39,7 @@ public class ActionFoldOrFade extends AnAction {
 		vFile.putUserData(CoreState.FADING_MODE_KEY, nextMode);
 	}
 
-	public static void setFold(Editor editor, boolean shouldExpand) {
+	private static void setFold(Editor editor, boolean shouldExpand) {
 		var fm = (FoldingModelEx) editor.getFoldingModel();
 		fm.runBatchFoldingOperation(() -> {
 			for (FoldRegion r : fm.getGroupedRegions(RegionFold.TAILWIND_GROUP))
@@ -49,5 +49,9 @@ public class ActionFoldOrFade extends AnAction {
 	
 	public static void unfade(VirtualFile vFile) {
 		setFade(vFile, CoreState.FadingMode.OFF);
+	}
+	
+	public static void unfold(Editor editor) {
+		setFold(editor, true);
 	}
 }
