@@ -23,7 +23,7 @@ public class ToggleAction extends AnAction {
 
 		var coreState = CoreState.getInstance(project);
 		CoreState.FadingMode currentMode = vFile.getUserData(CoreState.FADING_MODE_KEY);
-		if (currentMode == null) 
+		if (currentMode == null)
 			currentMode = coreState.getMode();
 
 		CoreState.FadingMode nextMode = currentMode.next();
