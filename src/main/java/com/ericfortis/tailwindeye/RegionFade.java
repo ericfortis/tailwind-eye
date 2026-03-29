@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO study large file annnotator, so perhaps we can speed up fading by not computing needless syntax
+
 public class RegionFade implements Annotator {
 
 	private static final TextAttributesKey FADED_TEXT = TextAttributesKey.createTextAttributesKey(

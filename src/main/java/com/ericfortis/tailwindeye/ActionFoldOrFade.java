@@ -26,11 +26,11 @@ public class ActionFoldOrFade extends AnAction {
 
 		var nextMode = getNextMode(project, vFile);
 		setFold(editor, nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
-		
+
 		setFade(vFile, nextMode);
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye toggle"); // just for fade
 	}
-	
+
 	private static CoreState.FadingMode getNextMode(Project project, VirtualFile vFile) {
 		var currentMode = vFile.getUserData(CoreState.FADING_MODE_KEY);
 		if (currentMode == null)
@@ -49,11 +49,11 @@ public class ActionFoldOrFade extends AnAction {
 				r.setExpanded(shouldExpand);
 		});
 	}
-	
+
 	public static void unfade(VirtualFile vFile) {
 		setFade(vFile, CoreState.FadingMode.OFF);
 	}
-	
+
 	public static void unfold(Editor editor) {
 		setFold(editor, true);
 	}
