@@ -35,7 +35,7 @@ public class ActionFoldOrFade extends AnAction {
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye toggle");
 	}
 
-	public static void setFade(VirtualFile vFile, CoreState.FadingMode nextMode) {
+	private static void setFade(VirtualFile vFile, CoreState.FadingMode nextMode) {
 		vFile.putUserData(CoreState.FADING_MODE_KEY, nextMode);
 	}
 
@@ -45,5 +45,9 @@ public class ActionFoldOrFade extends AnAction {
 			for (FoldRegion r : fm.getGroupedRegions(RegionFold.TAILWIND_GROUP))
 				r.setExpanded(shouldExpand);
 		});
+	}
+	
+	public static void unfade(VirtualFile vFile) {
+		setFade(vFile, CoreState.FadingMode.OFF);
 	}
 }
