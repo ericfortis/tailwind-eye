@@ -27,7 +27,7 @@ public class RegionFold extends FoldingBuilderEx {
 			 .filter(attr -> "className".equals(attr.getName())
 					&& attr.getValueElement() != null
 					&& attr.getValue() != null
-					&& !attr.getValue().isBlank())
+					&& attr.getValue().startsWith("\"") && attr.getValue().endsWith("\""))
 			 .map(attr -> {
 				 // we need to create a non-overlapping fold, so we can't fold the full className="", 
 				 // because that collides with native IDE fold regions.
