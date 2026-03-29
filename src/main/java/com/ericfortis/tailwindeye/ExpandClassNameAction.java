@@ -38,11 +38,11 @@ public class ExpandClassNameAction extends AnAction {
 
 	private static XmlAttributeValue findClassNameAttrValue(PsiElement element) {
 		for (PsiElement current = element; current != null && !(current instanceof PsiFile); current = current.getParent())
-			if (current instanceof XmlAttributeValue value
-				 && value.getParent() instanceof XmlAttribute attribute
-				 && "className".equals(attribute.getName())
+			if (current instanceof XmlAttributeValue v
+				 && v.getParent() instanceof XmlAttribute attr
+				 && "className".equals(attr.getName())
 			)
-				return value;
+				return v;
 		return null;
 	}
 
