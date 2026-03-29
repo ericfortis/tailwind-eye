@@ -17,9 +17,8 @@ public class ActionTurnOff extends AnAction {
 		var vFile = psiFile.getVirtualFile();
 		if (vFile == null) return;
 
-		vFile.putUserData(CoreState.FADING_MODE_KEY, CoreState.FadingMode.OFF);
-
+		ActionFoldOrFade.setFade(vFile, CoreState.FadingMode.OFF);
+		ActionFoldOrFade.setFold(editor, true);
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye off");
-		ActionFoldOrFade.doFold(editor, true);
 	}
 }

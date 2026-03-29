@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.FoldRegion;
 import com.intellij.openapi.editor.ex.FoldingModelEx;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
 public class ActionFoldOrFade extends AnAction {
@@ -28,15 +29,17 @@ public class ActionFoldOrFade extends AnAction {
 			currentMode = coreState.getMode();
 
 		CoreState.FadingMode nextMode = currentMode.next();
-		vFile.putUserData(CoreState.FADING_MODE_KEY, nextMode);
 
+		setFade(vFile, nextMode);
+		setFold(editor, nextMode != CoreState.FadingMode.FOLD_CLASS_NAME);
 		DaemonCodeAnalyzer.getInstance(project).restart(psiFile, "tailwind eye toggle");
-		
-		boolean shouldExpand = nextMode != CoreState.FadingMode.FOLD_CLASS_NAME;
-		doFold(editor, shouldExpand);
 	}
 
-	public static void doFold(Editor editor, boolean shouldExpand) {
+	public static void setFade(VirtualFile vFile, CoreState.FadingMode nextMode) {
+		vFile.putUserData(CoreState.FADING_MODE_KEY, nextMode);
+	}
+
+	public static void setFold(Editor editor, boolean shouldExpand) {
 		var fm = (FoldingModelEx) editor.getFoldingModel();
 		fm.runBatchFoldingOperation(() -> {
 			for (FoldRegion r : fm.getGroupedRegions(RegionFold.TAILWIND_GROUP))
