@@ -2,6 +2,22 @@
 A WebStorm extension that provides a visual fading or folding effect for code. It can toggle between fading non-styling
 code (to focus on Tailwind classes) and folding the content of `className` strings.
 
+<video src="docs/demo.mp4"></video>
+
+## Fold
+![](docs/fold.png)
+
+## Dim
+![](docs/dim.png)
+
+## Edit multiline
+![](docs/multiline-editor.png)
+
+## Off
+![](docs/off.png)
+
+
+
 ## Motivation
 To reduce visual noise and focus on what matters, whether it's the structure of your HTML/JSX or the Tailwind styling
 itself.
