@@ -20,8 +20,11 @@ public final class CoreState implements PersistentStateComponent<CoreState> {
 		FOLD;
 
 		public EyeMode next() {
-			if (this == OFF) return FOLD;
-			return this == FADE ? FOLD : FADE;
+			if (this == OFF) 
+				return FOLD;
+			return this == FADE 
+				 ? FOLD 
+				 : FADE;
 		}
 	}
 
