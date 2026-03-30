@@ -30,10 +30,10 @@ public class ActionFoldOrFade extends AnAction {
 	}
 
 	private static CoreState.EyeMode getNextMode(Project project, VirtualFile vFile) {
-		var currentMode = vFile.getUserData(CoreState.EYE_MODE_KEY);
-		if (currentMode == null)
-			currentMode = CoreState.getInstance(project).getMode();
-		return currentMode.next();
+		var mode = vFile.getUserData(CoreState.EYE_MODE_KEY);
+		if (mode == null)
+			mode = CoreState.getInstance(project).getMode();
+		return mode.next();
 	}
 
 	private static void setFade(VirtualFile vFile, CoreState.EyeMode nextMode) {

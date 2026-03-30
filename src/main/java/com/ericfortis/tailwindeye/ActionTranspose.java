@@ -42,8 +42,7 @@ public class ActionTranspose extends AnAction {
 		for (PsiElement current = element; current != null && !(current instanceof PsiFile); current = current.getParent())
 			if (current instanceof XmlAttributeValue v
 				 && v.getParent() instanceof XmlAttribute attr
-				 && "className".equals(attr.getName())
-			)
+				 && "className".equals(attr.getName()))
 				return v;
 		return null;
 	}
@@ -57,13 +56,11 @@ public class ActionTranspose extends AnAction {
 	}
 
 	private static String toInline(String text) {
-		var content = text.substring(2, text.length() - 2).trim();
-		return "\"" + normalizeSpaces(content) + "\"";
+		return "\"" + normalizeSpaces(text.substring(2, text.length() - 2).trim()) + "\"";
 	}
 
 	private static String toMultiline(String text) {
-		var content = text.substring(1, text.length() - 1).trim();
-		return "{`\n" + splitOnWhitespace(content) + "\n`}";
+		return "{`\n" + splitOnWhitespace(text.substring(1, text.length() - 1).trim()) + "\n`}";
 	}
 
 	private static String normalizeSpaces(String text) {
