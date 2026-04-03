@@ -2,7 +2,8 @@
 <idea-plugin>
   <id>com.ericfortis.tailwindeye</id>
   <name>Tailwind Eye</name>
-  <vendor>ericfortis</vendor>
+  <version>0.0.1</version>
+  <vendor>Eric Fortis</vendor>
 
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.javascript</depends>
