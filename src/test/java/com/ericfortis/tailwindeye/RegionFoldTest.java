@@ -3,8 +3,8 @@ package com.ericfortis.tailwindeye;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 public class RegionFoldTest extends BasePlatformTestCase {
-	public void testFoldingRegions() {
-		myFixture.configureByText("test.html",
+	public void testFoldingRegionsJSX() {
+		myFixture.configureByText("test.jsx",
 			 "<tag className=\"bg-red-500 p-4\">Hello</tag>");
 
 		var builder = new RegionFold();
@@ -24,8 +24,8 @@ public class RegionFoldTest extends BasePlatformTestCase {
 	}
 
 
-	public void testNoFoldingForOtherAttributes() {
-		myFixture.configureByText("test.html",
+	public void testNoFoldingForOtherAttributesTSX() {
+		myFixture.configureByText("test.tsx",
 			 "<tag id=\"main\" title=\"Home\">Hello</tag>");
 
 		var descriptors = new RegionFold().buildFoldRegions(
