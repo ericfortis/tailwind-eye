@@ -28,6 +28,8 @@ Use the shortcut `Shift + Alt + F` to toggle between the two modes:
 - **Fade non-styling code**: Fades everything except `className` attributes.
 - **Fold className content**: Folds the actual Tailwind utility strings.
 
+`Cmd+Shift+I` toggles inline<->multiline classNames
+
 <!-- Plugin description end -->
 
 
