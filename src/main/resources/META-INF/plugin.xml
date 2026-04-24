@@ -1,0 +1,40 @@
+<!-- Plugin Configuration File. See https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+  <id>com.ericfortis.tailwindeye</id>
+  <name>Tailwind Eye</name>
+  <version>0.0.1</version>
+  <vendor>Eric Fortis</vendor>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.javascript</depends>
+
+  <actions>
+    <action id="TailwindEye.Toggle"
+            class="com.ericfortis.tailwindeye.ActionFoldOrFade"
+            text="Toggle Tailwind Eye"
+            description="Either Folds classNames or Fades non-classNames">
+      <add-to-group group-id="ViewMenu" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
+    </action>
+    <action id="TailwindEye.TurnOff"
+            class="com.ericfortis.tailwindeye.ActionTurnOff"
+            text="Turn Off Tailwind Eye"
+            description="Turns off Fold and Fades">
+      <add-to-group group-id="ViewMenu" anchor="after" relative-to-action="TailwindEye.Toggle"/>
+    </action>
+    <action id="TailwindEye.EditString"
+            class="com.ericfortis.tailwindeye.ActionTranspose"
+            text="Transpose ClassName"
+            description="Cycles between row (inline) or column (multiline)">
+      <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
+    </action>
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tailwindeye.RegionFold"/>
+
+    <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>
+    <colorSettingsPage implementation="com.ericfortis.tailwindeye.SettingsPage"/>
+  </extensions>
+</idea-plugin>

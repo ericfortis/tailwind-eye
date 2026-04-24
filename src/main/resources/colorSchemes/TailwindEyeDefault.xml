@@ -1,0 +1,14 @@
+<scheme name="Default">
+  <attributes>
+    <option name="TAILWIND_EYE_FAINT">
+      <value>
+        <option name="FOREGROUND" value="c0c0c0"/>
+      </value>
+    </option>
+    <option name="TAILWIND_EYE_CLASSNAMES">
+      <value>
+        <option name="FOREGROUND" value="00ff20"/>
+      </value>
+    </option>
+  </attributes>
+</scheme>
