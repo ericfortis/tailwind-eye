@@ -5,11 +5,8 @@ code (to focus on Tailwind classes) and folding the content of `className` strin
 ## Demo
 ![](docs/demo.gif)
 
-## Fold
-![](docs/fold.png)
-
-## Dim
-![](docs/dim.png)
+## Fold and Dim
+![](docs/side-by-side.png)
 
 ## Edit multiline
 ![](docs/multiline-editor.png)
