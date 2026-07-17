@@ -128,6 +128,12 @@ tasks {
 	publishPlugin {
 		dependsOn(patchChangelog)
 	}
+
+    withType<Test>().configureEach {
+        classpath = classpath.filter { path ->
+            !path.toString().contains("vuejs")
+        }
+    }
 }
 
 intellijPlatformTesting {
